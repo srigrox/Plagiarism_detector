@@ -1,0 +1,22 @@
+{
+  "name": "plagiarism_detector",
+  "version": "1.0.0",
+  "description": "CS4350 Final Project",
+  "main": "index.ts",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srigrox/Plagiarism_detector.git"
+  },
+  "keywords": [
+    "packagelock"
+  ],
+  "author": "srinath",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/srigrox/Plagiarism_detector/issues"
+  },
+  "homepage": "https://github.com/srigrox/Plagiarism_detector#readme"
+}
