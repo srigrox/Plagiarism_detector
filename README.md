@@ -1,6 +1,7 @@
 # Plagiarism_detector
 CS4350 Final Project
-Test 
+Will Cui, Naomi Kim, Srinath Gaddipati, Ben Schultze
+
 
 # Setup:
 ```npm i @msrvida/python-program-analysis```
@@ -21,3 +22,5 @@ Test
 
 ## To run express app:
 ```node build/app.js```
+
+Tasks:
