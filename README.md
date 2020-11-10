@@ -7,3 +7,5 @@ CS4350 Final Project
 ```npm init```
 
 ```tsc index.ts```
+
+Tasks:
