@@ -8,14 +8,14 @@ Frontend is in the `client` folder and backend is in the `server` folder.
 
 ## In /server/: 
 ```npm install express```
+
 ```npm install @msrvida/python-program-analysis```
 
 ## In /client/:
 ```npm install react```
-```npm run build```
 
-# Running app
-In both: 
+# Running the application:
+In both `client` and `server`: 
 ```npm run start```
 
 Tasks:
