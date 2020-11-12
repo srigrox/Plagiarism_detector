@@ -4,23 +4,18 @@ Will Cui, Naomi Kim, Srinath Gaddipati, Ben Schultze
 
 
 # Setup:
-```npm i @msrvida/python-program-analysis```
+Frontend is in the `client` folder and backend is in the `server` folder.
 
-```npm init```
+## In /server/: 
+```npm install express```
+```npm install @msrvida/python-program-analysis```
 
-```npm install typescript -s```
-
-```npm run tsc -- --init```
-
-```npm install express -s```
-
-```npm install @types/express -s```
+## In /client/:
+```npm install react```
+```npm run build```
 
 # Running app
-## Compiling app:
-```npm run tsc```
-
-## To run express app:
-```node build/app.js```
+In both: 
+```npm run start```
 
 Tasks:
