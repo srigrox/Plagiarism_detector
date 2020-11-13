@@ -1,4 +1,4 @@
-import { SelectedFiles } from "SelectedFiles"
+import SelectedFiles from "./SelectedFiles";
 
 interface IComparison {
     comparedFiles: SelectedFiles;
