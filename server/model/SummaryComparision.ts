@@ -14,9 +14,9 @@ class SummaryComparison {
         this.factory = factory
     }
 
-    function generateComparisions() : void {
+    generateComparisions() : void {
 
     }
 }
 
-export default SummaryComparision
+export default SummaryComparison

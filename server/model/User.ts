@@ -1,5 +1,6 @@
 import IFile from "./IFile";
 import SelectedFiles from "./SelectedFiles";
+import SummaryComparison from "./SummaryComparision";
 
 export default class User {
     username : String;
