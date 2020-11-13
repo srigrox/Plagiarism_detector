@@ -1,6 +1,6 @@
 import SelectedFiles from "./SelectedFiles";
 
-interface IComparison {
+export default interface IComparison {
     comparedFiles: SelectedFiles;
     starred: boolean;
     ignored: boolean;
@@ -12,5 +12,3 @@ interface IComparison {
     flipStar(): void
     flipIgnored(): void
 }
-
-export default IComparison;

@@ -19,4 +19,4 @@ class SummaryComparison {
     }
 }
 
-export default SummaryComparision
+export default SummaryComparison
