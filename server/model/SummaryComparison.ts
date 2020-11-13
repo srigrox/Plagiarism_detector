@@ -14,7 +14,7 @@ class SummaryComparison {
         this.factory = factory
     }
 
-    function generateComparisions() : void {
+    generateComparisions() : void {
 
     }
 }
