@@ -19,3 +19,5 @@ In both `client` and `server`:
 ```npm run start```
 
 Tasks:
+
+hello
