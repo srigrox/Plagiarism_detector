@@ -1,8 +1,9 @@
-import { ComparisonFactory } from "./ComparisonFactory"
+import ComparisonFactory from "./ComparisonFactory"
 import IComparison from "./IComparison";
 import SelectedFiles from "./SelectedFiles";
+import { folderStructureCompare } from "./Utils";
 
-export class SummaryComparison {
+export default class SummaryComparison {
     private comparedFiles : SelectedFiles
     private comparisions : Array<IComparison>
     private factory: ComparisonFactory
@@ -21,6 +22,7 @@ export class SummaryComparison {
     }
 
     generateComparisions() : void {
-        // RUN COMPARISON UTILS ON THIS FILE
+        console.log(folderStructureCompare(this.comparedFiles));
+        // TODO: Create the comparison
     }
 }

@@ -1,8 +1,8 @@
-import { Abstraction } from "./Abstraction";
-import { RenamedVars } from "./RenamedVars";
+import Abstraction from "./Abstraction";
+import RenamedVars from "./RenamedVars";
 import TextualDiff from "./TextualDiff";
 
-export class ComparisonFactory {
+export default class ComparisonFactory {
     public makeRenamedVars(): RenamedVars {
         return new RenamedVars();
     }

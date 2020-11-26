@@ -1,7 +1,7 @@
 import IFile from "./IFile";
 import User from "./User";
 
-export class Application {
+export default class Application {
 
     // Map to store users
     private users : Map<string, User>;
@@ -61,8 +61,8 @@ export class Application {
         this.currentUser = null;
     }
 
-    selectFiles(): void {
-
+    selectFiles(file1: IFile, file2: IFile): void {
+        this.currentUser.createSelection(file1, file2);
     }
 
     compare() : void {
