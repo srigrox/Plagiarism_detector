@@ -1,6 +1,6 @@
 import IFile from "./IFile";
 import SelectedFiles from "./SelectedFiles";
-import SummaryComparison from "./SummaryComparison";
+import { SummaryComparison } from "./SummaryComparison";
 
 export default class User {
     private username: string;
@@ -37,6 +37,6 @@ export default class User {
     }
 
     makeSummary(): void {
-        // Create the summary comparison based on the files selected
+        this.comparisons.push(new SummaryComparison(this.selectedFiles));
     }
 }

@@ -1,20 +1,20 @@
 import IFile from "./IFile";
 import User from "./User";
 
-class Application{
+export class Application {
 
     // Map to store users
     private users : Map<string, User>;
     private currentUser?: User;
 
-    private constructor(users : Map<string, User>, currentUser: User) {
-        this.users = users;
-        this.currentUser = currentUser;
+    private constructor() {
+        this.users = new Map<string, User>();
+        this.currentUser = null;
     }
 
-    public static instance(users: Map<string, User>, currentUser?: User): Application {
+    public static instance(): Application {
         if (Application.theApp === undefined) {
-            Application.theApp = new Application(users, currentUser);
+            Application.theApp = new Application();
         }
         return this.theApp;
     }
@@ -66,9 +66,7 @@ class Application{
     }
 
     compare() : void {
-        // HERE IS WHERE WE CALL THE METHOD
+        this.currentUser.makeSummary();
     }
 
 }
-
-export default Application

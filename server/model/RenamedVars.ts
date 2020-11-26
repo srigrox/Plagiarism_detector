@@ -1,7 +1,7 @@
 import { rename } from "fs";
 import IComparison from "./IComparison";
 
-class RenamedVars implements IComparison {
+export class RenamedVars implements IComparison {
     comparedFiles: any;
     starred: boolean;
     ignored: boolean;
@@ -18,7 +18,4 @@ class RenamedVars implements IComparison {
     flipIgnored(): void {
         throw new Error("Method not implemented.");
     }
-
 }
-
-export default RenamedVars;

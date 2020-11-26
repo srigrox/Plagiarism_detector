@@ -2,6 +2,8 @@
 import * as express from 'express';
 import * as fileUpload from 'express-fileupload';
 import { parse } from "@msrvida/python-program-analysis"
+import { Application } from '../model/Application';
+import { Code } from '../model/Code';
 
 const app: express.Application = express();
 
@@ -16,9 +18,10 @@ app.use(function(req, res, next) {
 
 app.use(fileUpload());
 
+let application = Application.instance();
 const files = []
 
-const code = [
+const sampleCode = [
   'x, y = 0, 0',
   'while x < 10:',
   '   y += x * 2',
@@ -26,7 +29,9 @@ const code = [
   'print(y)'
 ];
 
-files.push(parse(code.join('\n'))); 
+const code = new Code(sampleCode.join('\n'));
+
+files.push(parse(code.getCode())); 
 
 const todos = [
   { title: files[0].code[0].type }
