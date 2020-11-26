@@ -3,9 +3,13 @@ import SelectedFiles from "./SelectedFiles";
 import SummaryComparison from "./SummaryComparison";
 
 export default class User {
-    username : String;
-    password : String;
+    username : string;
+    password : string;
     files : Array<IFile>;
     comparisons : Array<SummaryComparison>;
     selectedFiles : SelectedFiles;
+
+    getUsername(): string{
+        return this.username;
+    }
 }

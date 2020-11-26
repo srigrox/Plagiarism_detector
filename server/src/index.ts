@@ -13,7 +13,10 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
+
 app.use(fileUpload());
+
+const files = []
 
 const code = [
   'x, y = 0, 0',
@@ -23,10 +26,10 @@ const code = [
   'print(y)'
 ];
 
-const tree = parse(code.join('\n')); 
+files.push(parse(code.join('\n'))); 
 
 const todos = [
-  { title: tree.code[0].type}
+  { title: files[0].code[0].type }
 ];
 
 app.get('/todo', (req, res) => {
@@ -52,8 +55,12 @@ app.delete('/todo', (req, res) => {
 
 });
 
+// Route for file upload
 app.post('/file', (req, res) => {
-  console.log(req.files.myFile.data.toString());
+  let file = req.files.myFile.data.toString()
+  console.log(file);
+  files.push(parse(file));
+
   res.status(200).send("File uploaded successfully");
 });
 
@@ -69,8 +76,10 @@ app.all('*', (req, res) => {
   res.status(404).send('Not Found!')
 });
 
-app.listen('3001', () => {
-  console.log('server running on localhost:3001/');
+const port = process.env.PORT || 3001;
+
+app.listen(port, () => {
+  console.log(`server running on localhost:${port}/`);
 });
 
 

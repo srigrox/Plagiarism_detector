@@ -105,7 +105,7 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
         title="Sign Up"
         visible={this.state.showSignup}
         okButtonProps={{form:'signupform', htmlType: 'submit'}}
-        onCancel={this.handleCancelLogin}
+        onCancel={this.handleCancelSignup}
         >            
         <Form id="signupform" onFinish={(values) => this.onSignup(values)} ref={this.signupForm}>
                 <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Please input username' }]}><Input/></Form.Item>
