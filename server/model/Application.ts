@@ -1,3 +1,4 @@
+import IFile from "./IFile";
 import User from "./User";
 
 class Application{
@@ -48,8 +49,12 @@ class Application{
         this.setCurrentUser(user);
     }
 
-    upload() : void {
-
+    upload(file: IFile) : void {
+        if (this.currentUser !== null) {
+            this.currentUser.uploadFile(file)
+        } else {
+            throw new Error('Login before uploading files')
+        }
     }
 
     logout() : void {
@@ -61,7 +66,7 @@ class Application{
     }
 
     compare() : void {
-
+        // HERE IS WHERE WE CALL THE METHOD
     }
 
 }
