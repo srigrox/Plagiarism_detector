@@ -1,7 +1,6 @@
 import { FileSearchOutlined, HistoryOutlined, UploadOutlined } from '@ant-design/icons';
 import { Layout, Button, PageHeader, Row, Col, Modal, Form, Input, Menu, Tooltip } from 'antd';
 import { FormInstance } from 'antd/lib/form';
-import { Content } from 'antd/lib/layout/layout';
 import Title from "antd/lib/typography/Title";
 import React from "react";
 import FileComparisonComponent from './file-comparison';
