@@ -74,7 +74,7 @@ export default class FileUploadComponent extends React.Component<{}, any> {
 
   render(){
       return <Layout>
-        <Layout.Content>
+        <Layout.Content className='inner'>
             <h1>File Upload using React</h1>
             <Form> 
                 <Form.Item><Input type="file" multiple onChange={this.onFileChange} /></Form.Item> 

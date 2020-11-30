@@ -1,8 +1,11 @@
 import { FileSearchOutlined, HistoryOutlined, UploadOutlined } from '@ant-design/icons';
-import { Layout, Button, PageHeader, Row, Col, Modal, Form, Input, Menu } from 'antd';
+import { Layout, Button, PageHeader, Row, Col, Modal, Form, Input, Menu, Tooltip } from 'antd';
 import { FormInstance } from 'antd/lib/form';
+import { Content } from 'antd/lib/layout/layout';
 import Title from "antd/lib/typography/Title";
 import React from "react";
+import FileComparisonComponent from './file-comparison';
+import FileUploadComponent from './file-upload';
 import { PlagiarismAppState } from "./plagiarism.interface";
 
 export default class Homepage extends React.Component<{}, PlagiarismAppState> {
@@ -14,10 +17,10 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
         this.loginForm = React.createRef();
         this.signupForm = React.createRef();
         this.state = { 
-            isLoggedIn: false,
+            isLoggedIn: true,
             showLogin: false,
             showSignup: false,
-            currentMenu: '',
+            currentMenu: 'upload',
             user: {
                 username: "",
                 password: ""
@@ -151,7 +154,7 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
     }
 
     render(){
-        const { isLoggedIn } = this.state;
+        const { isLoggedIn, currentMenu } = this.state;
         return <Layout>
             <PageHeader
             className="site-page-header"
@@ -161,6 +164,9 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
                 {isLoggedIn ? this.renderAfterLoginHomepage() : this.renderBeforeLoginHomepage()}
                 {this.renderLogin()}
                 {this.renderSignup()}
+                {currentMenu == 'upload' ? <FileUploadComponent/> : null}
+                {currentMenu == 'compare' ? <FileComparisonComponent/> : null}
+                {currentMenu == 'history' ? <FileComparisonComponent/> : null}
             </Layout.Content>
         </Layout>
     }

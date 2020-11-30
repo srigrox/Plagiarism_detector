@@ -11,3 +11,63 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.inner {
+  padding: 20px;
+}
+
+.code-body {
+  padding: 20px;
+}
+
+.code-container {
+  width: 100%;
+  overflow: scroll;
+  height: calc(100vh - 250px);
+  background-color: dimgray;
+}
+
+code {
+  width: calc(100% - 30px);
+  display: inline-block; 
+  color: white;
+  padding: 2px 10px;
+  white-space: nowrap;
+  overflow: scroll;
+}
+
+code::-webkit-scrollbar {
+  display: none;
+}
+
+
+.line {
+  background-color: black;
+  width: 30px;
+}
+
+.is-plagerized {
+  background-color: tomato;
+  cursor: help;
+}
+
+.code-body p {
+  color: white;
+  float: right;
+}
+
+.percent {
+  color: yellow;
+  float: left;
+  padding-right: 5px;
+}
+
+.tooltip {
+  overflow: hidden;
+  padding-top: 6px;
+}
+
+.ant-tooltip-inner {
+  width: 150px;
+  line-height: 5px;
+}
