@@ -1,7 +1,11 @@
 
 import * as express from 'express';
 import * as fileUpload from 'express-fileupload';
-import { parse } from "@msrvida/python-program-analysis"
+import Application from '../model/Application';
+import Code from '../model/Code';
+import User from '../model/User';
+import { use } from 'chai';
+import Folder from '../model/Folder';
 
 const app: express.Application = express();
 
@@ -13,21 +17,47 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
+
 app.use(fileUpload());
 
-const code = [
+const application = Application.instance();
+let user = new User('username', 'password');
+application.register(user)
+
+const sampleCode = [
   'x, y = 0, 0',
   'while x < 10:',
   '   y += x * 2',
   '   x += 1',
   'print(y)'
 ];
+const code = new Code("code", sampleCode.join('\n'));
+application.upload(code)
 
-const tree = parse(code.join('\n')); 
+console.log(application.getCurrentUser().getFiles()[0].getCode())
 
 const todos = [
-  { title: tree.code[0].type}
+  { title: application.getCurrentUser().getFiles()[0].getCode().type }
 ];
+
+let file1, file2, folder1, folder2, folder3;
+
+file1 = new Code("code.py", "x = 1");
+file2 = new Code("index.py", "x = 2");
+
+folder2 = new Folder("Subfolder", [file1])
+folder1 = new Folder("Folder", [folder2, file2])
+folder3 = new Folder("Folderr", [folder2]);
+
+application.upload(folder1)
+application.upload(folder2)
+application.upload(folder3)
+application.upload(file1)
+application.upload(file2)
+
+application.selectFiles(folder1, folder3);
+
+application.compare();
 
 app.get('/todo', (req, res) => {
   res.status(200).send(todos);
@@ -52,8 +82,12 @@ app.delete('/todo', (req, res) => {
 
 });
 
+// Route for file upload
 app.post('/file', (req, res) => {
-  console.log(req.files.myFile.data.toString());
+  let file = req.files.myFile.data.toString()
+  console.log(file);
+  application.upload(new Code("code", file)); // TODO: Change "Code" to file name
+
   res.status(200).send("File uploaded successfully");
 });
 
@@ -69,8 +103,10 @@ app.all('*', (req, res) => {
   res.status(404).send('Not Found!')
 });
 
-app.listen('3001', () => {
-  console.log('server running on localhost:3001/');
+const port = process.env.PORT || 3001;
+
+app.listen(port, () => {
+  console.log(`server running on localhost:${port}/`);
 });
 
 

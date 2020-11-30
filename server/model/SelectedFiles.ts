@@ -2,18 +2,14 @@ import IFile from "./IFile";
 
 
 export default class SelectedFiles {
-    file1 : IFile;
-    file2 : IFile;
+    private files: Set<IFile> = new Set();
     
-    constructor() {
-
+    constructor(file1: IFile, file2: IFile) {
+        this.files.add(file1);
+        this.files.add(file2);
     }
 
-    setFile1(file : IFile) : void {
-        this.file1 = file;
-    }
-
-    setFile2(file : IFile) : void {
-        this.file2 = file;
+    getSelectedFiles(): Set<IFile> {
+        return this.files;
     }
 }

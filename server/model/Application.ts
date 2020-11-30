@@ -1,43 +1,72 @@
+import IFile from "./IFile";
 import User from "./User";
 
-class Appication{
+export default class Application {
 
-    users : Array<User>;
-    currentUser?: User;
+    // Map to store users
+    private users : Map<string, User>;
+    private currentUser?: User;
 
-    constructor(users : Array<User>, currentUser: User) {
-        this.users = users;
-        this.currentUser = currentUser;
+    private constructor() {
+        this.users = new Map<string, User>();
+        this.currentUser = null;
     }
 
-    getCurrentUser() : User {
+    public static instance(): Application {
+        if (Application.theApp === undefined) {
+            Application.theApp = new Application();
+        }
+        return this.theApp;
+    }
+
+    private static theApp: Application;
+
+    getCurrentUser(): User {
         return this.currentUser;
     }
 
-    register() : void {
-
+    setCurrentUser(user: User): void {
+        let name = user.getUsername();
+        if (this.users.has(name)) {
+            this.currentUser = this.users.get(name);
+        } else {
+            throw new Error('Invalid Username');
+        }
     }
 
-    login() : void {
-
+    register(user: User) : void {
+        let name = user.getUsername();
+        if (this.users.has(name)) {
+            throw new Error('Username already taken');
+        } else {
+            this.users.set(name, user);
+            this.setCurrentUser(user);
+        }
     }
 
-    upload() : void {
+    // TODO: User validation?
+    login(user: User) : void {
+        this.setCurrentUser(user);
+    }
 
+    upload(file: IFile) : void {
+        if (this.currentUser !== null) {
+            this.currentUser.uploadFile(file)
+        } else {
+            throw new Error('Login before uploading files')
+        }
     }
 
     logout() : void {
-
+        this.currentUser = null;
     }
 
-    selectFiles(): void {
-
+    selectFiles(file1: IFile, file2: IFile): void {
+        this.currentUser.createSelection(file1, file2);
     }
 
     compare() : void {
-
+        this.currentUser.makeSummary();
     }
 
 }
-
-export default Application

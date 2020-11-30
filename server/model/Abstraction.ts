@@ -1,6 +1,6 @@
 import IComparison from "./IComparison";
 
-class Abstraction implements IComparison {
+export default class Abstraction implements IComparison {
     comparedFiles: any;
     starred: boolean;
     ignored: boolean;
@@ -19,5 +19,3 @@ class Abstraction implements IComparison {
     }
 
 }
-
-export default Abstraction;

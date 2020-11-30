@@ -2,7 +2,7 @@ import Abstraction from "./Abstraction";
 import RenamedVars from "./RenamedVars";
 import TextualDiff from "./TextualDiff";
 
-class ComparisonFactory {
+export default class ComparisonFactory {
     public makeRenamedVars(): RenamedVars {
         return new RenamedVars();
     }
@@ -15,5 +15,3 @@ class ComparisonFactory {
         return new Abstraction();
     }
 }
-
-export default ComparisonFactory;

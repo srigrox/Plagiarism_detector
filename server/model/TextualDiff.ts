@@ -1,6 +1,6 @@
 import IComparison from "./IComparison";
 
-class TextualDiff implements IComparison {
+export default class TextualDiff implements IComparison {
     comparedFiles: any;
     starred: boolean;
     ignored: boolean;
@@ -19,5 +19,3 @@ class TextualDiff implements IComparison {
     }
 
 }
-
-export default TextualDiff;

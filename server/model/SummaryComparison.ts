@@ -1,22 +1,28 @@
 import ComparisonFactory from "./ComparisonFactory"
 import IComparison from "./IComparison";
 import SelectedFiles from "./SelectedFiles";
+import { folderStructureCompare } from "./Utils";
 
-class SummaryComparison {
+export default class SummaryComparison {
+    private comparedFiles : SelectedFiles
+    private comparisions : Array<IComparison>
+    private factory: ComparisonFactory
 
-    comparedFiles : SelectedFiles
-    comparisions : Array<IComparison>
-    factory: ComparisonFactory
-
-    constructor(comparedFiles : SelectedFiles, comparisions : Array<IComparison>, factory: ComparisonFactory) {
+    constructor(comparedFiles: SelectedFiles) {
         this.comparedFiles = comparedFiles;
-        this.comparisions = comparisions;
-        this.factory = factory
+        this.generateComparisions();
+    }
+
+    getComparedFiles(): SelectedFiles {
+        return this.comparedFiles;
+    }
+
+    getComparisons(): Array<IComparison> {
+        return this.comparisions;
     }
 
     generateComparisions() : void {
-
+        console.log(folderStructureCompare(this.comparedFiles));
+        // TODO: Create the comparison
     }
 }
-
-export default SummaryComparison
