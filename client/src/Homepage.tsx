@@ -5,6 +5,7 @@ import { Content } from 'antd/lib/layout/layout';
 import Title from "antd/lib/typography/Title";
 import React from "react";
 import FileComparisonComponent from './file-comparison';
+import FileHistoryComponent from './file-history';
 import FileUploadComponent from './file-upload';
 import { PlagiarismAppState } from "./plagiarism.interface";
 
@@ -166,7 +167,7 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
                 {this.renderSignup()}
                 {currentMenu == 'upload' ? <FileUploadComponent/> : null}
                 {currentMenu == 'compare' ? <FileComparisonComponent/> : null}
-                {currentMenu == 'history' ? <FileComparisonComponent/> : null}
+                {currentMenu == 'history' ? <FileHistoryComponent/> : null}
             </Layout.Content>
         </Layout>
     }
