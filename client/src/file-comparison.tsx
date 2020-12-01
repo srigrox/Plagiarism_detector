@@ -25,7 +25,11 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         ['WOW', false, "100%", "Textual Diff"], 
         ['okButtonProps={{form:', true, "100%", "Textual Diff"]];
 
-        return         <Content className="inner">
+        return <Content className="inner">
+            <Row style={{paddingLeft: '20px', paddingTop: '10px'}}>
+                <h2 style={{color: 'red', paddingRight: '5px'}}>40%</h2>
+                <h2>Similarity</h2>
+            </Row>
         <Row>
             <Col span="12" className='code-body'>
             <h2>index.tsx</h2>
