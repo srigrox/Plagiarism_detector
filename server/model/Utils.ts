@@ -2,9 +2,11 @@ import IFile from "./IFile";
 import Folder from "./Folder";
 import Code from "./Code";
 import SelectedFiles from "./SelectedFiles";
-import { ControlFlowGraph } from "@msrvida/python-program-analysis";
+import { ASSIGN, ControlFlowGraph, walk } from "@msrvida/python-program-analysis";
+
 
 export function folderStructureCompare(selectedFiles: SelectedFiles) {
+    // const ASSIGN: "assign"
     let files = Array.from(selectedFiles.getSelectedFiles())
 
     let tree1: Array<[number, string]> = mapTree(0, files[0]);
@@ -25,7 +27,9 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
     //tree2.sort(sortFunc);
     compare(tree1, tree2)
 
-    return structureCompare(tree1, tree2);
+    console.log(compare(tree1, tree2), "the result is:")
+
+    return {"structure" :structureCompare(tree1, tree2), "content": compare(tree1, tree2)};
     
     function mapTree(startNum: number, file: IFile): Array<[number, string]> {
         let output: Array<[number, string]> = [ [startNum, file.getName()] ]
@@ -72,7 +76,9 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
         let t2 = getCodeFiles(files[1])
         for (let i = 0; i < t1.length; i++) {
             for (let y = 0; y < t2.length; y++) {
-                compareFiles(t1[i], t2[y]) 
+                if (compareFiles(t1[i], t2[y])["Plagarised"] > 0.5) {
+                    output.push([t1[i].getName(), t2[y].getName()])
+                } 
             }
         }
 
@@ -93,24 +99,58 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
         return result
     }
 
-    function compareFiles(f1:Code, f2:Code) {
+    function compareFiles(f1:Code, f2:Code) : {"Plagarised": Number} {
         let c1 = f1.getCode() 
         let c2 = f2.getCode()
+
+        let n1 = walk(c1).map(node => node.type)
+        let n2 = walk(c2).map(node => node.type)
 
         let cfg1 = new ControlFlowGraph(c1)
         let cfg2 = new ControlFlowGraph(c2)
 
-        console.log(cfg1, "cfg1")
 
         let blocks1 = cfg1.blocks
+
         let blocks2 = cfg2.blocks
 
-        // for (let i = 0; i < blocks1.length; i++) {
-        //     for (let y = 0; y < blocks2.length; y++) {
-        //         if(blocks1[i].type === blocks2[y].type) {
-        //             if(blocks1[i].targets.length)
-        //         }
-        //     }
+        let simBlocks = []
+
+        console.log("hey")
+
+
+        for (let i = 0; i < blocks1.length; i++) {
+            for (let y = 0; y < blocks2.length; y++) {
+                console.log(blocks1.length, "came here 3")
+                if(blocks1[i].statements && blocks1[i].statements) {
+                    for(let z = 0; z < blocks1[i].statements.length; z++) {
+                        if(blocks1[i].statements[z] && blocks2[y].statements[z]) {
+                            if(blocks1[i].statements[z].type === blocks2[y].statements[z].type) {
+                                console.log(blocks1[i].statements.length, "came here 2")
+                                let a = blocks1[i].statements[z]
+                                let b = blocks2[y].statements[z]
+                                if(a.type == "assign" && b.type == "assign") {
+                                    console.log(a.targets.length, "something")
+                                    for(let q = 0; q < a.targets.length; q++) {
+                                        if(a.targets && a.targets[q] && b.targets && b.targets[q]) {
+                                            if(a.targets[q].type == b.targets[q].type) {
+                                                simBlocks.push([blocks1[i], blocks2[y]])
+                                            }
+                                        }
+                                    }
+        
+                                }
+        
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(simBlocks, "similar")
+        // if(blocks1.length / simBlocks.length > 0.5) {
+        return {"Plagarised" : ((blocks1.length / simBlocks.length) * 100)}
         // }
         // console.log(f1, "file")
         // console.log(c2.code[0])
