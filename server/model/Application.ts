@@ -21,6 +21,10 @@ export default class Application {
 
     private static theApp: Application;
 
+    getUsers(): Map<string, User> {
+        return this.users;
+    }
+
     getCurrentUser(): User {
         return this.currentUser;
     }
