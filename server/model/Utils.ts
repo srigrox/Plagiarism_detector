@@ -2,7 +2,7 @@ import IFile from "./IFile";
 import Folder from "./Folder";
 import Code from "./Code";
 import SelectedFiles from "./SelectedFiles";
-import { ASSIGN, ControlFlowGraph, walk } from "@msrvida/python-program-analysis";
+import { ControlFlowGraph, walk } from "@msrvida/python-program-analysis";
 
 
 export function folderStructureCompare(selectedFiles: SelectedFiles) {
@@ -107,7 +107,10 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
         let n2 = walk(c2).map(node => node.type)
 
         let cfg1 = new ControlFlowGraph(c1)
+        // console.log(cfg1, "cfg1")
+
         let cfg2 = new ControlFlowGraph(c2)
+        // console.log(cfg2, "cfg2")
 
 
         let blocks1 = cfg1.blocks
@@ -116,30 +119,86 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
 
         let simBlocks = []
 
-        console.log("hey")
+        // let typeList = ["module", "import" , "from" , "decorator" , "decorate" , "def" , "parameter" , "assign" , "assert" , "pass" , "return" , "yield" , "raise" , "continue" , "break" , "global" , "nonlocal" , "class"]
+        let typeList = ["assign"]
+        // console.log("hey")
 
 
         for (let i = 0; i < blocks1.length; i++) {
             for (let y = 0; y < blocks2.length; y++) {
-                console.log(blocks1.length, "came here 3")
+                // console.log(blocks1, "blocks 1 test")
                 if(blocks1[i].statements && blocks1[i].statements) {
                     for(let z = 0; z < blocks1[i].statements.length; z++) {
                         if(blocks1[i].statements[z] && blocks2[y].statements[z]) {
                             if(blocks1[i].statements[z].type === blocks2[y].statements[z].type) {
-                                console.log(blocks1[i].statements.length, "came here 2")
+                                // console.log(blocks1[i].statements, "blocks 1 statements")
+                                console.log()
                                 let a = blocks1[i].statements[z]
                                 let b = blocks2[y].statements[z]
+
                                 if(a.type == "assign" && b.type == "assign") {
-                                    console.log(a.targets.length, "something")
+                                    console.log(typeof a, "typeof a")
+                                    // console.log(a.targets.length, "something")
                                     for(let q = 0; q < a.targets.length; q++) {
-                                        if(a.targets && a.targets[q] && b.targets && b.targets[q]) {
-                                            if(a.targets[q].type == b.targets[q].type) {
+                                        if(a.targets && a.targets[q] && a.sources && a.sources[q] && b.targets && b.targets[q] && b.sources && b.sources[q]) {
+                                            if((a.targets[q].type == b.targets[q].type) && (a.sources[q].type == b.sources[q].type)) {
+                                                console.log(b.targets[q], "targets")
+                                                console.log(b.sources[q], "sources")
+
                                                 simBlocks.push([blocks1[i], blocks2[y]])
                                             }
                                         }
                                     }
         
                                 }
+
+                                // if(a.type == "assign" && b.type == "assign") {
+                                //     console.log(a.targets.length, "something")
+                                //     for(let q = 0; q < a.targets.length; q++) {
+                                //         if(a.targets && a.targets[q] && b.targets && b.targets[q]) {
+                                //             if(a.targets[q].type == b.targets[q].type) {
+                                //                 simBlocks.push([blocks1[i], blocks2[y]])
+                                //             }
+                                //         }
+                                //     }
+        
+                                // }
+
+                                // if(a.type == "assign" && b.type == "assign") {
+                                //     console.log(a.targets.length, "something")
+                                //     for(let q = 0; q < a.targets.length; q++) {
+                                //         if(a.targets && a.targets[q] && b.targets && b.targets[q]) {
+                                //             if(a.targets[q].type == b.targets[q].type) {
+                                //                 simBlocks.push([blocks1[i], blocks2[y]])
+                                //             }
+                                //         }
+                                //     }
+        
+                                // }
+
+                                // if(a.type == "assign" && b.type == "assign") {
+                                //     console.log(a.targets.length, "something")
+                                //     for(let q = 0; q < a.targets.length; q++) {
+                                //         if(a.targets && a.targets[q] && b.targets && b.targets[q]) {
+                                //             if(a.targets[q].type == b.targets[q].type) {
+                                //                 simBlocks.push([blocks1[i], blocks2[y]])
+                                //             }
+                                //         }
+                                //     }
+        
+                                // }
+
+                                // if(a.type == "assign" && b.type == "assign") {
+                                //     console.log(a.targets.length, "something")
+                                //     for(let q = 0; q < a.targets.length; q++) {
+                                //         if(a.targets && a.targets[q] && b.targets && b.targets[q]) {
+                                //             if(a.targets[q].type == b.targets[q].type) {
+                                //                 simBlocks.push([blocks1[i], blocks2[y]])
+                                //             }
+                                //         }
+                                //     }
+        
+                                // }
         
                             }
                         }
@@ -148,7 +207,9 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
             }
         }
 
-        console.log(simBlocks, "similar")
+        // console.log(simBlocks, "simblocks")
+
+        // console.log(simBlocks, "similar")
         // if(blocks1.length / simBlocks.length > 0.5) {
         return {"Plagarised" : ((blocks1.length / simBlocks.length) * 100)}
         // }

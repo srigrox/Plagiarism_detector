@@ -42,7 +42,8 @@ const todos = [
 
 let file1, file2, folder1, folder2, folder3;
 
-file1 = new Code("code.py", "x = 1");
+// file1 = new Code("code.py", "x = 1");
+file1 = code
 file2 = new Code("index.py", "x = 2");
 
 folder2 = new Folder("Subfolder", [file1])
