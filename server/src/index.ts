@@ -6,6 +6,9 @@ import Code from '../model/Code';
 import User from '../model/User';
 import { use } from 'chai';
 import Folder from '../model/Folder';
+import IFile from '../model/IFile';
+import IComparison from '../model/IComparison';
+import SummaryComparison from '../model/SummaryComparison';
 
 const app: express.Application = express();
 
@@ -45,15 +48,15 @@ let file1, file2, folder1, folder2, folder3;
 file1 = new Code("code.py", "x = 1");
 file2 = new Code("index.py", "x = 2");
 
-folder2 = new Folder("Subfolder", [file1])
-folder1 = new Folder("Folder", [folder2, file2])
+folder2 = new Folder("Subfolder", [file1]);
+folder1 = new Folder("Folder", [folder2, file2]);
 folder3 = new Folder("Folderr", [folder2]);
 
-application.upload(folder1)
-application.upload(folder2)
-application.upload(folder3)
-application.upload(file1)
-application.upload(file2)
+application.upload(folder1);
+application.upload(folder2);
+application.upload(folder3);
+application.upload(file1);
+application.upload(file2);
 
 application.selectFiles(folder1, folder3);
 
@@ -79,29 +82,44 @@ app.delete('/todo', (req, res) => {
   } else {
     res.status(500).send('Todo not found');
   }
-
 });
 
 // Register Route
 app.post('/register', (req, res) => {
-  let user = new User(req.files.username.data.toString(), req.files.password.data.toString());
-  application.register(user);
+  let user = new User(req.body.username, req.body.password);
+
+  try {
+    application.register(user);
+  } catch (error) {
+    res.status(500).send(error);
+    return
+  }
 
   res.status(200).send("Registration Successful")
-})
+});
 
 // Login Route
 app.post('/login', (req, res) => {
-  let name = req.files.username.data.toString();
+  let name = req.body.username;
+  // TODO: Add password verification
   let user = application.getUsers().get(name);
   
   if (user === undefined) {
-    res.status(200).send("User not found");
+    res.status(500).send("User not found");
   } else {
     application.setCurrentUser(user);
     res.status(200).send("Registration Successful");
   }
-})
+});
+
+// Route for getting all files
+app.get('/file', (req, res) => {
+  let files = application.getCurrentUser().getFiles();
+  let output: Array<string> = [];
+  files.forEach((file) => output.push(file.getName()));
+  const out = { files: output };
+  res.status(200).send(out);
+});
 
 // Route for file upload
 app.post('/file', (req, res) => {
@@ -111,10 +129,62 @@ app.post('/file', (req, res) => {
   try {
     application.upload(new Code(name, file));
   } catch (error) {
-    res.status(200).send("Python file has errors");
+    res.status(500).send("Python file has errors");
   }
 
   res.status(200).send("File uploaded successfully");
+});
+
+// Route for getting selected files
+app.get('/fileselection', (req, res) => {
+  let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
+  
+  let out = { "file1": files.next().value, "file2": files.next().value }
+  res.status(200).send(out);
+});
+
+// Route for selecting files
+app.post('/fileselection', (req, res) => {
+  const files = application.getCurrentUser().getFiles();
+  // TODO: Check if the request files are the same name
+  let file1: IFile, file2: IFile;
+  files.forEach((file) => {
+    let name = file.getName()
+    if (name === req.body.file1) {
+      file1 = file;
+    } else if (name === req.body.file2) {
+      file2 = file;
+    }
+  });
+
+  if(file1 !== undefined && file2 !== undefined) {
+    application.selectFiles(file1, file2);
+  }
+  res.status(200).send("Files selected successfully");
+});
+
+app.get('/comparison', (req, res) => {
+  let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
+  let file1 = files.next().value;
+  let file2 = files.next().value;
+
+  let summaries = application.getCurrentUser().getComparisons();
+
+  let comparison: SummaryComparison;
+  // Search the summary comparisons 
+  summaries.forEach((summ) => {
+    let selFiles = summ.getComparedFiles().getSelectedFiles().values();
+    if(file1 === selFiles.next().value && file2 == selFiles.next().value) {
+      comparison = summ;
+    }
+  });
+
+  let comparisons: Object[]
+  let out = { "comparisons": comparisons};
+  comparison.getComparisons().forEach((comp) => {
+    out.comparisons.push({ "line": 1, "severity": comp.PlagiarismSeverity() }) // TODO: Change response
+  })
+  res.status(200).send(out);
 });
 
 /* 

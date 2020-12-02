@@ -7,6 +7,7 @@ export default class SummaryComparison {
     private comparedFiles : SelectedFiles
     private comparisions : Array<IComparison>
     private factory: ComparisonFactory
+    // TODO: Implement factory
 
     constructor(comparedFiles: SelectedFiles) {
         this.comparedFiles = comparedFiles;
