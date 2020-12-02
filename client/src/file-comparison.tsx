@@ -1,6 +1,6 @@
 import { FileSearchOutlined } from "@ant-design/icons";
 import { Row, Col, Button, Tooltip } from "antd";
-import { Content } from "antd/lib/layout/layout";
+import Content from "antd/lib/layout/layout";
 import React from "react";
 
 export default class FileComparisonComponent extends React.Component<{}, any> {

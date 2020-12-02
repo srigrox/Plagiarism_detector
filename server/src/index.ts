@@ -82,11 +82,37 @@ app.delete('/todo', (req, res) => {
 
 });
 
+// Register Route
+app.post('/register', (req, res) => {
+  let user = new User(req.files.username.data.toString(), req.files.password.data.toString());
+  application.register(user);
+
+  res.status(200).send("Registration Successful")
+})
+
+// Login Route
+app.post('/login', (req, res) => {
+  let name = req.files.username.data.toString();
+  let user = application.getUsers().get(name);
+  
+  if (user === undefined) {
+    res.status(200).send("User not found");
+  } else {
+    application.setCurrentUser(user);
+    res.status(200).send("Registration Successful");
+  }
+})
+
 // Route for file upload
 app.post('/file', (req, res) => {
-  let file = req.files.myFile.data.toString()
-  console.log(file);
-  application.upload(new Code("code", file)); // TODO: Change "Code" to file name
+  let file = req.files.myFile.data.toString();
+  let name = req.files.myFile.name.toString();
+
+  try {
+    application.upload(new Code(name, file));
+  } catch (error) {
+    res.status(200).send("Python file has errors");
+  }
 
   res.status(200).send("File uploaded successfully");
 });

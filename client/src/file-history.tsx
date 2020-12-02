@@ -1,5 +1,5 @@
 import { Button, Space, Table } from "antd";
-import { Content } from "antd/lib/layout/layout";
+import Content from "antd/lib/layout/layout";
 import React from "react";
 import { PlagiarismAppState } from "./plagiarism.interface";
 
