@@ -9,7 +9,7 @@ import { DataService } from "./data-service";
 const { Option } = Select;
 
 export default class FileComparisonComponent extends React.Component<{}, any> {
-    constructor(props: {}){
+    constructor(props: {}) {
         super(props);
 
         this.state = {
@@ -20,7 +20,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
 
         DataService.getListFiles()
             .then((response: any) => {
-                this.setState({ files: response.data.files});
+                this.setState({ files: response.data.files });
             });
     }
 
@@ -59,34 +59,32 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         const { files, select1, select2 } = this.state;
 
         return <Content className="inner">
-
-
             <Row>
-            <Col span="12" className='file-select'>
-                <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection1 = value.toString()}>
-                    {files.map((value: any) => {
-                        return <Option value={value}>{value}</Option>
-                    })}
-                </Select>
-                <br></br>
-                <br></br>
-                <Button type="primary" onClick={() => this.onConfirm(fileSelection1, fileSelection2)}>Confirm Selection</Button>
-            </Col>
-            <Col span="12" className='file-select'>
-                <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection2 = value.toString()}>
-                    {files.map((value: any) => {
-                        return <Option value={value}>{value}</Option>
-                    })}
-                </Select>
-            </Col>
+                <Col span="12" className='file-select'>
+                    <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection1 = value.toString()}>
+                        {files.map((value: any) => {
+                            return <Option value={value}>{value}</Option>
+                        })}
+                    </Select>
+                    <br></br>
+                    <br></br>
+                    <Button type="primary" onClick={() => this.onConfirm(fileSelection1, fileSelection2)}>Confirm Selection</Button>
+                </Col>
+                <Col span="12" className='file-select'>
+                    <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection2 = value.toString()}>
+                        {files.map((value: any) => {
+                            return <Option value={value}>{value}</Option>
+                        })}
+                    </Select>
+                </Col>
             </Row>
-            <Row style={{ paddingLeft: '20px', paddingTop: '5px', marginBottom: '-20px'}}>
+            <Row style={{ paddingLeft: '20px', paddingTop: '5px', marginBottom: '-20px' }}>
                 <h2 style={{ color: 'red', paddingRight: '5px' }}>40%</h2>
                 <h2>Similarity</h2>
             </Row>
             <Row>
                 <Col span="12" className='code-body'>
-                <h2>{select1}</h2>
+                    <h2>{select1}</h2>
                     <div className="code-container col-12">
                         {plagerism1.map((value, index) => {
                             let tipText;

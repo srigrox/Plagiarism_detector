@@ -154,6 +154,7 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
         return <Modal
         title="Login"
         visible={this.state.showLogin}
+        okText='Upload!'
         okButtonProps={{form:'loginform', htmlType: 'submit'}}
         onCancel={this.handleCancelLogin}
         >            
