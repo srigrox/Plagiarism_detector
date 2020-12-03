@@ -12,6 +12,25 @@ export class DataService {
       });
   }
 
+  public static getListFiles(): Promise<Array<string>> {
+    return axios.get<Array<string>>('http://localhost:3001/file')
+    .catch((error: Error): any  => {
+      console.error('Something went wrong: ', error.message);
+      return { data: [] };
+    });
+  }
+
+  public static postFileSelection(file1: string, file2: string) {
+    const formData = new FormData();
+    formData.append("file1", file1);
+    formData.append("file2", file2);
+    return axios.post('http://localhost:3001/fileselection', formData)
+      .catch((error: Error): any  => {
+        console.error('Something went wrong: ', error.message);
+        return { data: [] };
+      });
+  }
+
   public static addTodo(todo: TodoItem) {
     const body: any = { todo: todo };
     return axios.post<Array<TodoItem>>('http://localhost:3001/todo', body)

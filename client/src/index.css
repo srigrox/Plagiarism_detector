@@ -14,6 +14,8 @@ code {
 
 .inner {
   padding: 20px;
+  height: calc(100vh - 120px);
+  overflow: scroll;
 }
 
 .code-body {
@@ -23,7 +25,7 @@ code {
 .code-container {
   width: 100%;
   overflow: scroll;
-  height: calc(100vh - 250px);
+  height: calc(100vh - 265px);
   background-color: dimgray;
 }
 

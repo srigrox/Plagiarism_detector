@@ -1,5 +1,6 @@
+import axios from 'axios';
 import { FileSearchOutlined, HistoryOutlined, UploadOutlined } from '@ant-design/icons';
-import { Layout, Button, PageHeader, Row, Col, Modal, Form, Input, Menu, Tooltip } from 'antd';
+import { Layout, Button, PageHeader, Row, Col, Modal, Form, Input, Menu, Tooltip, message } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import Title from "antd/lib/typography/Title";
 import React from "react";
@@ -22,8 +23,8 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
             showSignup: false,
             currentMenu: 'upload',
             user: {
-                username: "",
-                password: ""
+                username: "hello",
+                password: "there"
             }
         };
     }
@@ -64,29 +65,89 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
         let password = values.password;
         this.loginForm.current?.setFieldsValue({username: "", password: ""});
         console.log(values)
-        this.setState({
-            user: {
-                username: username,
-                password: password,
-            },
-            showLogin: false,
-            isLoggedIn: true,
+
+        
+
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+
+        axios.post('http://localhost:3001/login', formData)
+        .then((response) => {
+            console.log(response)
+            this.setState({
+                user: {
+                    username: username,
+                    password: password,
+                },
+                showLogin: false,
+                isLoggedIn: true,
+            })
         })
+        .catch((err) => {
+            if (err.response) {
+                // Request made and server responded
+                console.log(err.response.data);
+                console.log(err.response.status);
+                console.log(err.response.headers);
+                if(err.response.data == 'User not found'){
+                    message.error('Invlid Password or Username');
+                    console.log('User not found')
+                }
+              } else if (err.request) {
+                // The request was made but no response was received
+                console.log(err.request);
+              } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("error:", err)
+              }
+        })
+
     }
 
     onSignup(values: any){
         let username = values.username;
         let password = values.password;
+
         this.signupForm.current?.setFieldsValue({username: "", password: ""});
+
         console.log(values)
-        this.setState({
-            user: {
-                username: username,
-                password: password,
-            },
-            showSignup: false,
-            isLoggedIn: true,
+
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+
+        axios.post('http://localhost:3001/register', formData)
+        .then((response) => {
+            console.log(response)
+            this.setState({
+                user: {
+                    username: username,
+                    password: password,
+                },
+                showSignup: false,
+                isLoggedIn: true,
+            })
         })
+        .catch((err) => {
+            if (err.response) {
+                // Request made and server responded
+                console.log(err.response.data);
+                console.log(err.response.status);
+                console.log(err.response.headers);
+                if(err.response.data == 'duplicate'){
+                    console.log('This user already exsists')
+                }
+              } else if (err.request) {
+                // The request was made but no response was received
+                console.log(err.request);
+              } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("error:", err)
+              }
+        })
+
+        console.log(this.state)
     }
 
     renderLogin(){
@@ -150,6 +211,9 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
             <Menu.Item key="compare" icon={<FileSearchOutlined/>}>Compare Files</Menu.Item>
             <Menu.Item key="history" icon={<HistoryOutlined/>}>History</Menu.Item>
         </Menu>
+        {currentMenu == 'upload' ? <FileUploadComponent/> : null}
+        {currentMenu == 'compare' ? <FileComparisonComponent/> : null}
+        {currentMenu == 'history' ? <FileHistoryComponent/> : null}
         </div>
     }
 
@@ -164,9 +228,6 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
                 {isLoggedIn ? this.renderAfterLoginHomepage() : this.renderBeforeLoginHomepage()}
                 {this.renderLogin()}
                 {this.renderSignup()}
-                {currentMenu == 'upload' ? <FileUploadComponent/> : null}
-                {currentMenu == 'compare' ? <FileComparisonComponent/> : null}
-                {currentMenu == 'history' ? <FileHistoryComponent/> : null}
             </Layout.Content>
         </Layout>
     }

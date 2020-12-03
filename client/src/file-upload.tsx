@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { Input, Form, Layout, Button } from "antd";
+import { Input, Form, Layout, Button, message } from "antd";
 import { FormInstance } from "antd/lib/form";
 import React from "react";
 
@@ -31,6 +31,11 @@ export default class FileUploadComponent extends React.Component<{}, any> {
      
     // Create an object of formData 
     const formData = new FormData(); 
+
+    if(this.state.selectedFile == null){
+      message.error('Please select a file to upload');
+      return;
+    } 
    
     // Update the formData object 
     formData.append( 
