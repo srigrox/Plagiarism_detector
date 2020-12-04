@@ -9,4 +9,10 @@ export default interface IFile {
 
     // Gets code from file or all subfiles in a list.
     getCode(): Module;
+
+    // Gets file ID
+    getID(): number;
+
+    // Get date
+    getDate(): string;
 }

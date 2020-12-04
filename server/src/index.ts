@@ -122,8 +122,6 @@ const sampleCode2 = [
 const code = new Code("code", sampleCode.join('\n'));
 application.upload(code)
 
-console.log(application.getCurrentUser().getFiles()[0].getCode())
-
 const todos = [
   { title: application.getCurrentUser().getFiles()[0].getCode().type }
 ];
@@ -201,13 +199,14 @@ app.post('/login', (req, res) => {
 // Route for getting all files
 app.get('/file', (req, res) => {
   let files = application.getCurrentUser().getFiles();
-  let output: Array<string> = [];
-  files.forEach((file) => output.push(file.getName()));
+  let output: Array<Object> = [];
+  files.forEach((file) => output.push({ "name": file.getName(), "id": file.getID(), "date": file.getDate() }));
   const out = { files: output };
   res.status(200).send(out);
 });
 
 // Route for file upload
+// Possible TODO: Add date/time of upload
 app.post('/file', (req, res) => {
   let file = req.files.myFile.data.toString();
   let name = req.files.myFile.name.toString();
@@ -245,8 +244,10 @@ app.post('/fileselection', (req, res) => {
 
   if(file1 !== undefined && file2 !== undefined) {
     application.selectFiles(file1, file2);
+    res.status(200).send("Files selected successfully");
+  } else {
+    res.status(500).send("One or more files were not found");
   }
-  res.status(200).send("Files selected successfully");
 });
 
 app.get('/comparison', (req, res) => {
@@ -266,7 +267,7 @@ app.get('/comparison', (req, res) => {
   });
 
   let comparisons: Object[]
-  let out = { "comparisons": comparisons};
+  let out = { "percentage": comparison.getPlagiarismPercentage(), "comparisons": comparisons};
   comparison.getComparisons().forEach((comp) => {
     out.comparisons.push({ "line": 1, "severity": comp.PlagiarismSeverity() }) // TODO: Change response
   })
