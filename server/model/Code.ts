@@ -33,4 +33,9 @@ export default class Code implements IFile {
     getID(): number {
         return this.id;
     }
+
+    // Returns date
+    getDate(): string {
+        return this.date.toString();
+    }
 }

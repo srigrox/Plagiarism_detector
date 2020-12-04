@@ -36,4 +36,9 @@ export default class Folder implements IFile {
     getID(): number {
         return 0;
     }
+
+    // Returns date
+    getDate(): string{
+        return undefined;
+    }
 }

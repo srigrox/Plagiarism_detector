@@ -115,7 +115,7 @@ app.post('/login', (req, res) => {
 app.get('/file', (req, res) => {
   let files = application.getCurrentUser().getFiles();
   let output: Array<Object> = [];
-  files.forEach((file) => output.push({ "name": file.getName(), "id": file.getID }));
+  files.forEach((file) => output.push({ "name": file.getName(), "id": file.getID, "date": file.getDate() }));
   const out = { files: output };
   res.status(200).send(out);
 });

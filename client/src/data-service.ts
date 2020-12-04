@@ -24,7 +24,7 @@ export class DataService {
 
 
   public static getListFiles(): Promise<Array<string>> {
-    return axios.get<Array<string>>('http://localhost:3001/file')
+    return axios.get<Array<any>>('http://localhost:3001/file')
       .catch((error: Error): any => {
         console.error('Something went wrong: ', error.message);
         return { data: [] };

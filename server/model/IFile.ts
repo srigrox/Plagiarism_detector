@@ -12,4 +12,7 @@ export default interface IFile {
 
     // Gets file ID
     getID(): number;
+
+    // Get date
+    getDate(): string;
 }
