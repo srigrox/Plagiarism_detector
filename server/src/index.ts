@@ -34,6 +34,91 @@ const sampleCode = [
   '   x += 1',
   'print(y)'
 ];
+
+
+const sampleCode1 = [
+  'def arrayMultiply(array, c):',
+  '    return [element*c for element in array]',
+  'def arraySum(a, b):',
+  '    x = a + b',
+  '    return x'
+  // 'def intermediate(a, b, ratio):',
+]
+
+const sampleCode2 = [
+  "def add(x, y):",
+  "  return x + y",
+
+  "# This function subtracts two numbers",
+  "def subtract(x, y):",
+  "    return x - y",
+
+  "# This function multiplies two numbers",
+  "def multiply(x, y):",
+  "    return x * y",
+  "# This function divides two numbers",
+  "def divide(x, y):",
+  "    return x / y",
+
+
+  'print("Select operation.")',
+  'print("1.Add")',
+  'print("2.Subtract")',
+  'print("3.Multiply")',
+  'print("4.Divide")',
+
+  "while True:",
+  "    # Take input from the user",
+  '    choice = input("Enter choice(1/2/3/4): ")',
+
+  '    # Check if choice is one of the four options',
+  "    if choice in ('1', '2', '3', '4'):",
+  '        num1 = float(input("Enter first number: "))',
+  '        num2 = float(input("Enter second number: "))',
+
+  "        if choice == '1':",
+  '            print(num1, "+", num2, "=", add(num1, num2))',
+
+  "        elif choice == '2':",
+  '            print(num1, "-", num2, "=", subtract(num1, num2))',
+
+  "        elif choice == '3':",
+  '            print(num1, "*", num2, "=", multiply(num1, num2))',
+
+  "        elif choice == '4':",
+  '            print(num1, "/", num2, "=", divide(num1, num2))',
+  "        break",
+  "    else:",
+  '        print("Invalid Input")'
+]
+
+// const scode = `def arrayMultiply(array, c):
+// return [element*c for element in array]
+
+// def arraySum(a, b):
+// return map(sum, zip(a,b))
+
+// def intermediate(a, b, ratio):
+// aComponent = arrayMultiply(a, ratio)
+// bComponent = arrayMultiply(b, 1-ratio)
+// return arraySum(aComponent, bComponent)
+
+// def gradient(a, b, steps):
+// steps = [n/float(steps) for n in range(steps)]
+// for step in steps:
+//     print intermediate(a, b, step)
+
+// #print arrayMultiply((1,2,3), 0.3)
+// #print arraySum((1,2,3), (0.5, 0.5, 0.5))
+// #print intermediate((1,2,3), (3,2,1), 0.5)
+// #print gradient(None, None, 5)
+
+
+// pureBlue = (8, 123, 157)
+// pureYellowGreen = (0,84,166)
+
+// gradient(pureBlue, pureYellowGreen, 6)`
+
 const code = new Code("code", sampleCode.join('\n'));
 application.upload(code)
 
@@ -46,7 +131,7 @@ const todos = [
 let file1, file2, folder1, folder2, folder3;
 
 // file1 = new Code("code.py", "x = 1");
-file1 = code
+file1 = new Code("code", sampleCode2.join('\n'));
 file2 = new Code("index.py", "x = 2");
 
 folder2 = new Folder("Subfolder", [file1]);
