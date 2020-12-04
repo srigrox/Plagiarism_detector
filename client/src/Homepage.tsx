@@ -23,8 +23,8 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
             showSignup: false,
             currentMenu: 'upload',
             user: {
-                username: "hello",
-                password: "there"
+                username: "",
+                password: ""
             }
         };
     }

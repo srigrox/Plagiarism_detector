@@ -82,11 +82,11 @@ export default class FileUploadComponent extends React.Component<{}, any> {
     }
   };
 
-  deleteUploaded(fileName: any){
+  deleteUploaded(fileName: any) {
     DataService.removeFile(fileName)
-    .then((response: any) => {
-      this.setState({ uploadFiles: response.data })
-    })
+      .then((response: any) => {
+        this.setState({ uploadFiles: response.data })
+      })
   }
 
   render() {
@@ -94,12 +94,17 @@ export default class FileUploadComponent extends React.Component<{}, any> {
     let uploaded = [];
     if (uploadedFiles) {
       for (let i = 0; i < uploadedFiles.length; i++) {
-        let tranform = { key: i.toString(), fileName: uploadedFiles[i] }
+        let tranform = { key: i.toString(), date: uploadedFiles[i].date, fileName: uploadedFiles[i].name }
         uploaded.push(tranform)
       }
     }
 
     const columns = [
+      {
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
+      },
       {
         title: 'File name',
         dataIndex: 'fileName',
@@ -124,12 +129,12 @@ export default class FileUploadComponent extends React.Component<{}, any> {
                 </Button>
         </Form>
         {this.fileData()}
-        <div style={{paddingTop: '20px'}}>
-        <h1>Uploaded Files</h1>
-        <Table
-          columns={columns}
-          dataSource={uploaded}>
-        </Table>
+        <div style={{ paddingTop: '20px' }}>
+          <h1>Uploaded Files</h1>
+          <Table
+            columns={columns}
+            dataSource={uploaded}>
+          </Table>
         </div>
       </Layout.Content>
     </Layout>

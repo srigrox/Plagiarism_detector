@@ -36,6 +36,6 @@ export default class Code implements IFile {
 
     // Returns date
     getDate(): string {
-        return this.date.toString();
+        return this.date.toISOString().split('T')[0];
     }
 }
