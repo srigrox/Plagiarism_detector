@@ -31,4 +31,9 @@ export default class Folder implements IFile {
     getCode(): Module {
         throw new Error("Cannot get code from a folder");
     }
+
+    // Returns file ID
+    getID(): number {
+        return 0;
+    }
 }
