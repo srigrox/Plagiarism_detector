@@ -64,8 +64,8 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     onConfirm(file1: any, file2: any) {
         console.log("hellooo", file1, file2)
         this.setState({
-            select1: file1.key,
-            select2: file2.key,
+            select1: file1.label[0],
+            select2: file2.label[0],
         })
         DataService.postFileSelection(file1.value, file2.value)
     }
@@ -192,7 +192,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                 <Col span="12" className='file-select'>
                     <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => fileSelection1 = value}>
                         {files.map((file: any) => {
-                            return <Option className='select-option' key={file.name} value={file.id}><Text className='select-option'>{file.name + `\t\t`}</Text><Text>{file.date}</Text></Option>
+                            return <Option key={file.name} value={file.id}><Text className='select-option'>{file.name + `\t\t`}</Text><Text>{file.date}</Text></Option>
                         })}
                     </Select>
                     <br></br>
