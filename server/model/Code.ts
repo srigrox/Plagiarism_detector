@@ -1,10 +1,11 @@
 import { Module, parse } from "@msrvida/python-program-analysis";
+import { json } from "express";
 import  IFile from "./IFile";
 
 export default class Code implements IFile {
     private name: string;
     private code: Module;
-    private id: number;
+    private id: string;
     private date: Date;
 
     // Parses the code in constructor and stores it in code.
@@ -12,7 +13,18 @@ export default class Code implements IFile {
         this.name = name;
         this.code = parse(code);
         this.date = new Date();
-        this.id = (+this.date);
+        this.id = this.hash();
+    }
+
+    private hash(): string {
+        let out = 0;
+        let id = JSON.stringify(this);
+        for (let i = 0; i < id.length; i++) {
+            let char = id.charCodeAt(i);
+            out = ((out << 5) - out) + char;
+            out = out & out;
+        }
+        return out.toString();
     }
 
     getName(): string {
@@ -30,7 +42,7 @@ export default class Code implements IFile {
     }
 
     // Returns file ID
-    getID(): number {
+    getID(): string {
         return this.id;
     }
 

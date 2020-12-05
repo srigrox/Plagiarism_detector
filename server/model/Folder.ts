@@ -33,8 +33,8 @@ export default class Folder implements IFile {
     }
 
     // Returns file ID
-    getID(): number {
-        return 0;
+    getID(): string {
+        return undefined;
     }
 
     // Returns date

@@ -15,10 +15,9 @@ export default class FileUploadComponent extends React.Component<{}, any> {
     this.state = {
       selectedFile: null,
     };
-    DataService.getListFiles()
-      .then((response: any) => {
+    DataService.getListFiles().then((response: any) => {
         this.setState({ uploadedFiles: response.data.files })
-      })
+    })
   }
 
   uploadFile(value: any) {
@@ -26,28 +25,30 @@ export default class FileUploadComponent extends React.Component<{}, any> {
   }
 
   onFileChange = (event: any) => {
-
     // Update the state 
-    this.setState({ selectedFile: event.target.files[0] });
-
+    this.setState({ selectedFile: event.target.files });
   };
 
   // On file upload (click the upload button) 
   onFileUpload = () => {
+    const { selectedFile } = this.state
+
     // Create an object of formData 
     const formData = new FormData();
+    
 
-    if (this.state.selectedFile == null) {
+    if (selectedFile == null) {
       message.error('Please select a file to upload');
       return;
     }
 
     // Update the formData object 
-    formData.append(
-      "myFile",
-      this.state.selectedFile,
-      this.state.selectedFile.name
-    );
+    for(let i = 0; i < selectedFile.length; i++)
+      formData.append(
+        `files[${i}]`,
+        selectedFile[i],
+        selectedFile[i].name
+      );
 
     // Details of the uploaded file 
     console.log(this.state.selectedFile);
@@ -58,35 +59,39 @@ export default class FileUploadComponent extends React.Component<{}, any> {
   };
 
   fileData = () => {
-
-    if (this.state.selectedFile) {
-
-      return (
-        <div>
-          <h2>File Details:</h2>
-          <p>File Name: {this.state.selectedFile.name}</p>
-          <p>File Type: {this.state.selectedFile.type}</p>
-          <p>
-            Last Modified:{" "}
-            {this.state.selectedFile.lastModifiedDate.toDateString()}
-          </p>
-        </div>
-      );
+    const { selectedFile } = this.state
+    let dom_content = []
+    if (selectedFile) {
+      dom_content.push( <h2>File Details:</h2> )
+      for (let i = 0; i < selectedFile.length; i++) {
+        let file = selectedFile[i];
+        dom_content.push (
+          <div>
+            <p>File Name: {file.name}</p>
+            <p>File Type: {file.type}</p>
+            <p>
+              Last Modified:{" "}
+              {file.lastModifiedDate.toDateString()}
+            </p>
+          </div>
+        );
+      }
     } else {
-      return (
+      dom_content.push (
         <div>
           <br />
           <h4>Choose before Pressing the Upload button</h4>
         </div>
       );
     }
+    return dom_content;
   };
 
   deleteUploaded(fileName: any) {
     DataService.removeFile(fileName)
       .then((response: any) => {
         this.setState({ uploadFiles: response.data })
-      })
+      });
   }
 
   render() {
@@ -94,8 +99,8 @@ export default class FileUploadComponent extends React.Component<{}, any> {
     let uploaded = [];
     if (uploadedFiles) {
       for (let i = 0; i < uploadedFiles.length; i++) {
-        let tranform = { key: i.toString(), date: uploadedFiles[i].date, fileName: uploadedFiles[i].name }
-        uploaded.push(tranform)
+        let transform = { key: i.toString(), date: uploadedFiles[i].date, fileName: uploadedFiles[i].name, id: uploadedFiles[i].id }
+        uploaded.push(transform)
       }
     }
 
@@ -114,7 +119,7 @@ export default class FileUploadComponent extends React.Component<{}, any> {
         title: 'Action',
         key: 'action',
         render: (record: any) => (
-          <Button onClick={() => this.deleteUploaded(record.fileName)}>Delete</Button>
+          <Button onClick={ () => this.deleteUploaded(record.id) }>Delete</Button>
         )
       },
     ];
@@ -126,15 +131,13 @@ export default class FileUploadComponent extends React.Component<{}, any> {
           <Form.Item><Input type="file" multiple onChange={this.onFileChange} /></Form.Item>
           <Button onClick={this.onFileUpload}>
             Upload!
-                </Button>
+          </Button>
         </Form>
+        
         {this.fileData()}
         <div style={{ paddingTop: '20px' }}>
           <h1>Uploaded Files</h1>
-          <Table
-            columns={columns}
-            dataSource={uploaded}>
-          </Table>
+          <Table columns={columns} dataSource={uploaded}/>
         </div>
       </Layout.Content>
     </Layout>

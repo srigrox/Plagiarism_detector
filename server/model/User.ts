@@ -32,6 +32,16 @@ export default class User {
         this.files.push(file);
     }
 
+    removeFile(id: string): void {
+        const index = this.files.findIndex((f) => f.getID() === id);
+        
+        if (index > -1) {
+            this.files.splice(index, 1);
+        } else {
+            throw new Error("File not found");
+        }
+    }
+
     createSelection(file1: IFile, file2: IFile): void {
         this.selectedFiles = new SelectedFiles(file1, file2);
     }

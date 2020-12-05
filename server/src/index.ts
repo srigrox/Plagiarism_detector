@@ -11,11 +11,13 @@ import IComparison from '../model/IComparison';
 import SummaryComparison from '../model/SummaryComparison';
 
 const app: express.Application = express();
+var cors = require('cors')
 
 app.use(express.json({type: 'json'}));
+app.use(cors())
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
@@ -129,20 +131,20 @@ const todos = [
 let file1, file2, folder1, folder2, folder3;
 
 // file1 = new Code("code.py", "x = 1");
-file1 = new Code("code", sampleCode2.join('\n'));
+file1 = new Code("code2.py", sampleCode2.join('\n'));
 file2 = new Code("index.py", "x = 2");
 
 folder2 = new Folder("Subfolder", [file1]);
 folder1 = new Folder("Folder", [folder2, file2]);
 folder3 = new Folder("Folderr", [folder2]);
 
-application.upload(folder1);
-application.upload(folder2);
-application.upload(folder3);
+//application.upload(folder1);
+//application.upload(folder2);
+//application.upload(folder3);
 application.upload(file1);
 application.upload(file2);
 
-application.selectFiles(folder1, folder3);
+application.selectFiles(file1, file2);
 
 application.compare();
 
@@ -175,7 +177,7 @@ app.post('/register', (req, res) => {
   try {
     application.register(user);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send('Login before uploading files');
     return
   }
 
@@ -208,16 +210,31 @@ app.get('/file', (req, res) => {
 // Route for file upload
 // Possible TODO: Add date/time of upload
 app.post('/file', (req, res) => {
-  let file = req.files.myFile.data.toString();
-  let name = req.files.myFile.name.toString();
-
-  try {
-    application.upload(new Code(name, file));
-  } catch (error) {
-    res.status(500).send("Python file has errors");
-  }
+  const uploadedFiles = req.files
+  const keys = Object.keys(uploadedFiles);
+  for (let i = 0; i < keys.length; i++) {
+    let f = uploadedFiles[keys[i]];
+    try {
+      application.upload(new Code(f.name.toString(), f.data.toString()));
+    } catch (error) {
+      res.status(500).send("Python file has errors");
+    }
+  }  
 
   res.status(200).send("File uploaded successfully");
+});
+
+app.delete('/file', (req, res) => {
+  
+  const id = req.query.file.toString();
+  
+  try {
+    application.getCurrentUser().removeFile(id);
+    res.status(200).send("File removed successfully");
+  } catch (error) {
+    res.status(500).send("File not found");
+  }
+    
 });
 
 // Route for getting selected files

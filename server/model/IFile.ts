@@ -11,7 +11,7 @@ export default interface IFile {
     getCode(): Module;
 
     // Gets file ID
-    getID(): number;
+    getID(): string;
 
     // Get date
     getDate(): string;

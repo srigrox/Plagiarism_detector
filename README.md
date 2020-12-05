@@ -11,6 +11,8 @@ Frontend is in the `client` folder and backend is in the `server` folder.
 
 ```npm install @msrvida/python-program-analysis```
 
+```npm install cors```
+
 ## In /client/:
 ```npm install react```
 

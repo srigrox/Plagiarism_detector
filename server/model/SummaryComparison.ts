@@ -28,7 +28,7 @@ export default class SummaryComparison {
     }
 
     generateComparisions() : void {
-        console.log(folderStructureCompare(this.comparedFiles));
+        // console.log(folderStructureCompare(this.comparedFiles));
         // TODO: Create the comparison
     }
 }
