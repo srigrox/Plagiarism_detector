@@ -192,17 +192,20 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                 <Col span="12" className='file-select'>
                     <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection1 = value.toString()}>
                         {files.map((value: any) => {
-                            return <Option key={value.id} value={value.name}>{value.name}</Option>
+                            return <Option key={value.id} value={value.id}>{value.name}</Option>
                         })}
                     </Select>
                     <br></br>
                     <br></br>
-                    <Button type="primary" onClick={() => this.onConfirm(fileSelection1, fileSelection2)}>Confirm Selection</Button>
+                    <Button type="primary" onClick={() => {
+                        this.onConfirm(fileSelection1, fileSelection2)
+                        console.log(fileSelection1)
+                        console.log(fileSelection2)}}>Confirm Selection</Button>
                 </Col>
                 <Col span="12" className='file-select'>
                     <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection2 = value.toString()}>
                         {files.map((value: any) => {
-                            return <Option key={value.id} value={value.name}>{value.name}</Option>
+                            return <Option key={value.id} value={value.id}>{value.name}</Option>
                         })}
                     </Select>
                 </Col>

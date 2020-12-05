@@ -217,7 +217,7 @@ app.post('/file', (req, res) => {
     }
   }  
 
-  res.status(200).send("File uploaded successfully");
+  res.status(200).send({ "files": getFilesAndSend() });  
 });
 
 app.delete('/file', (req, res) => {

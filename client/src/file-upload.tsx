@@ -20,10 +20,6 @@ export default class FileUploadComponent extends React.Component<{}, any> {
     });
   }
 
-  uploadFile(value: any) {
-    console.log('value: ', value);
-  }
-
   onFileChange = (event: any) => {
     // Update the state 
     this.setState({ selectedFile: event.target.files });
@@ -55,7 +51,9 @@ export default class FileUploadComponent extends React.Component<{}, any> {
 
     // Request made to the backend api 
     // Send formData object 
-    axios.post('http://localhost:3001/file', formData);
+    axios.post('http://localhost:3001/file', formData).then((response: any) => {
+      this.setState({ uploadedFiles: response.data.files });
+    });
   };
 
   fileData = () => {

@@ -48,6 +48,6 @@ export default class Code implements IFile {
 
     // Returns date
     getDate(): string {
-        return this.date.toISOString().split('T')[0];
+        return this.date.toLocaleTimeString([], {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
     }
 }
