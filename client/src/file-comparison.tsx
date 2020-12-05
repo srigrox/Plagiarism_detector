@@ -9,23 +9,39 @@ import { DataService } from "./data-service";
 const { Option } = Select;
 
 const plagerism1 = [['style={{padding: 100}}><Button size="large" onClick={this.showLogin}', true, "100%", "Textual Diff"],
-        ['okButtonProps={{form:', true, "100%", "Textual Diff"],
-        ['okButtonProps={{form:', true, "100%", "Textual Diff"],
-        ['this is diff', false, "100%", "Textual Diff"],
-        ['WOW', false, "100%", "Textual Diff"],
-        ['okButtonProps={{form:', true, "100%", "Textual Diff"],
-        ['this is diff', false, "100%", "Textual Diff"],
-        ['WOW', false, "100%", "Textual Diff"],
-        ['okButtonProps={{form:', true, "100%", "Textual Diff"],
-        ['this is diff', false, "100%", "Textual Diff"],
-        ['WOW', false, "100%", "Textual Diff"],
-        ['okButtonProps={{form:', true, "100%", "Textual Diff"]];
+['okButtonProps={{form:', true, "100%", "Textual Diff"],
+['okButtonProps={{form:', true, "100%", "Textual Diff"],
+['this is diff', false, "100%", "Textual Diff"],
+['WOW', false, "100%", "Textual Diff"],
+['okButtonProps={{form:', true, "100%", "Textual Diff"],
+['this is diff', false, "100%", "Textual Diff"],
+['WOW', false, "100%", "Textual Diff"],
+['okButtonProps={{form:', true, "100%", "Textual Diff"],
+['this is diff', false, "100%", "Textual Diff"],
+['WOW', false, "100%", "Textual Diff"],
+['okButtonProps={{form:', true, "100%", "Textual Diff"]];
 
-        const fileSelected = false;
+const fileSelected = false;
 
-        const plagerism2 = [['this is diff', false, "100%", "Textual Diff"],
-        ['WOW', false, "100%", "Textual Diff"],
-        ['okButtonProps={{form:', true, "100%", "Textual Diff"]];
+const plagerism2 = [['this is diff', false, "100%", "Textual Diff"],
+['WOW', false, "100%", "Textual Diff"],
+['okButtonProps={{form:', true, "100%", "Textual Diff"]];
+
+const samplecode1 = ['style={{padding: 100}}><Button size="large" onClick={this.showLogin}',
+    'okButtonProps={{form:',
+    'okButtonProps={{form:',
+    'this is diff',
+    'WOW',
+    'okButtonProps={{form:',
+    'this is diff',
+    'WOW',
+    'okButtonProps={{form:',
+    'this is diff',
+    'WOW',
+    'okButtonProps={{form:'];
+
+const plagiarism1 = { plagiarism: 60, compare: [[1, 1, 3, 4], [5, 6, 1, 2]] }
+const plagiarism2 = { plagiarism: 80, compare: [[1, 1, 3, 4, "var change", "60%"], [5, 6, 1, 2, "name change", "80%"]] }
 
 export default class FileComparisonComponent extends React.Component<{}, any> {
     constructor(props: {}) {
@@ -53,7 +69,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         DataService.postFileSelection(file1, file2)
     }
 
-    onChangeTab(){
+    onChangeTab() {
         const { tab } = this.state;
         if (tab === "textdiff") {
             this.setState({
@@ -67,26 +83,101 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     renderTextDiff(file: number) {
-        let pla;
-        file === 0 ? pla = plagerism1 : pla = plagerism2;
+        const compare = plagiarism1.compare;
+        let out1 = samplecode1.map(element => {
+            return { "code": element, "detect": false };
+        });
+        let out2 = samplecode1.map(element => {
+            return { "code": element, "detect": false };
+        });
+        console.log("hererererere", typeof plagiarism2.compare[0][4])
+        for (let i = 0; i < samplecode1.length; i++) {
+            for (let j = 0; j < compare.length; j++) {
+                if (file === 0) {
+                    if (i >= compare[j][0] && i <= compare[j][1]) {
+                        out1[i].detect = true;
+                    }
+                } else {
+                    if (i >= compare[j][2] && i <= compare[j][3]) {
+                        out2[i].detect = true;
+                    }
+                }
+            }
+        }
+
+        let out = file === 0 ? out1 : out2;
         return <div>
-        {pla.map((value, index) => {
+            {out.map((value: any, index: number = 0) => {
+                return <div>
+                    <code className={"line"}>{index + 1}</code>
+                    <code className={value.detect ? 'is-plagerized' : ''}>{value.code}</code>
+                </div>
+            })}
+        </div>
+    }
+
+    renderComparison(file: number){
+        const compare = plagiarism2.compare;
+        let out1 = samplecode1.map(element => {
+            return { "code": element, "detect": false, "type": "", "percent": ''};
+        });
+        let out2 = samplecode1.map(element => {
+            return { "code": element, "detect": false, "type": "", "percent": ''};
+        });
+        for (let i = 0; i < samplecode1.length; i++) {
+            for (let j = 0; j < compare.length; j++) {
+                if (file === 0) {
+                    if (i >= compare[j][0] && i <= compare[j][1]) {
+                        out1[i].detect = true
+                        out1[i].type = compare[j][4].toString()
+                        out1[i].percent = compare[j][5].toString()
+                    }
+                } else {
+                    if (i >= compare[j][2] && i <= compare[j][3]) {
+                        out2[i].detect = true;
+                        out2[i].type = compare[j][4].toString()
+                        out2[i].percent = compare[j][5].toString()
+                    }
+                }
+            }
+        }
+
+        let out = file === 0 ? out1 : out2;
+        return <div>
+        {out.map((line, index) => {
             let tipText;
-            if (value[1]) {
-                tipText = <div className='tooltip'><p className='percent'>{value[2]}</p>
+            if (line.detect) {
+                tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
                     <p>Similarity</p>
-                    <p>Type: {value[3]}</p>
-                    <Button icon={<FileSearchOutlined />} size={'small'}>
-                        See All
-</Button>
+                    <p>Type: {line.type}</p>
                 </div>
             }
             return <Tooltip placement="leftTop" title={tipText}>
                 <code className={"line"}>{index + 1}</code>
-                <code className={value[1] ? 'is-plagerized' : ''}>{value[0]}</code>
+                <code className={line.detect ? 'is-plagerized' : ''}>{line.code}</code>
             </Tooltip>
         })}
         </div>
+
+
+    }
+
+    renderPercentage(){
+        const { tab } = this.state;
+        let color = "";
+        let percentage = tab === "textdiff" ? plagiarism1.plagiarism : plagiarism2.plagiarism
+
+        if(percentage >= 0 && percentage < 30){
+            color = "green"
+        } else if (percentage >= 30 && percentage < 60){
+            color = "yellow"
+        } else if (percentage >= 60 && percentage < 80){
+            color = "orange"
+        } else {
+            color = "red"
+        }
+
+    return <h2 style={{ color: color, paddingRight: '5px' }}>{percentage + "%"}</h2>
     }
 
     render() {
@@ -94,7 +185,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         let fileSelection1: string = "";
         let fileSelection2: string = "";
 
-        const { files, select1, select2, tab} = this.state;
+        const { files, select1, select2, tab } = this.state;
 
         return <Content className="inner">
             <Row>
@@ -117,22 +208,22 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                 </Col>
             </Row>
             <Row style={{ paddingLeft: '20px', paddingTop: '5px', marginBottom: '-20px' }}>
-                <h2 style={{ color: 'red', paddingRight: '5px' }}>40%</h2>
+                {this.renderPercentage()}
                 <h2>Similarity</h2>
-                    <Button onClick={() => this.onChangeTab()} style={{ marginLeft : '20px' }}>{tab === "textdiff" ? "See Other Comparison" : "See Textual Diff"}</Button>
+                <Button onClick={() => this.onChangeTab()} style={{ marginLeft: '20px' }}>{tab === "textdiff" ? "See Other Comparison" : "See Textual Diff"}</Button>
             </Row>
             <Row>
                 <Col span="12" className='code-body'>
                     <h2>{select1}</h2>
                     <div className="code-container col-12">
-                        {this.renderTextDiff(0)}
+                        {tab === "textdiff" ? this.renderTextDiff(0) : this.renderComparison(0)}
                     </div>
                 </Col>
 
                 <Col span="12" className='code-body'>
                     <h2>{select2}</h2>
                     <div className="code-container col-12">
-                        {this.renderTextDiff(1)}
+                        {tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
                     </div>
                 </Col>
 
