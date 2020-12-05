@@ -73,3 +73,8 @@ code::-webkit-scrollbar {
   width: 150px;
   line-height: 5px;
 }
+
+.select-option {
+  white-space: pre;
+  font-weight: bold;
+}

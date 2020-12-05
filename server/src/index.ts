@@ -257,10 +257,10 @@ app.post('/fileselection', (req, res) => {
   // TODO: Check if the request files are the same name
   let file1: IFile, file2: IFile;
   files.forEach((file) => {
-    let name = file.getName()
-    if (name === req.body.file1) {
+    let id = file.getID()
+    if (id === req.body.file1) {
       file1 = file;
-    } else if (name === req.body.file2) {
+    } else if (id === req.body.file2) {
       file2 = file;
     }
   });

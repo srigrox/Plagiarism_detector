@@ -5,6 +5,7 @@ import React from "react";
 import { PlagiarismAppState } from "./plagiarism.interface";
 import { FormInstance } from 'antd/lib/form';
 import { DataService } from "./data-service";
+import Text from "antd/lib/typography/Text";
 
 const { Option } = Select;
 
@@ -41,7 +42,7 @@ const samplecode1 = ['style={{padding: 100}}><Button size="large" onClick={this.
     'okButtonProps={{form:'];
 
 const plagiarism1 = { plagiarism: 60, compare: [[1, 1, 3, 4], [5, 6, 1, 2]] }
-const plagiarism2 = { plagiarism: 80, compare: [[1, 1, 3, 4, "var change", "60%"], [5, 6, 1, 2, "name change", "80%"]] }
+const plagiarism2 = { plagiarism: 80, compare: [[1, 2, 4, 5, "var change", "60%"], [5, 6, 2, 3, "name change", "80%"]] }
 
 export default class FileComparisonComponent extends React.Component<{}, any> {
     constructor(props: {}) {
@@ -63,10 +64,10 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     onConfirm(file1: any, file2: any) {
         console.log("hellooo", file1, file2)
         this.setState({
-            select1: file1,
-            select2: file2,
+            select1: file1.key,
+            select2: file2.key,
         })
-        DataService.postFileSelection(file1, file2)
+        DataService.postFileSelection(file1.value, file2.value)
     }
 
     onChangeTab() {
@@ -181,18 +182,17 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     render() {
-
-        let fileSelection1: string = "";
-        let fileSelection2: string = "";
+        let fileSelection1: any;
+        let fileSelection2: any;
 
         const { files, select1, select2, tab } = this.state;
 
         return <Content className="inner">
             <Row>
                 <Col span="12" className='file-select'>
-                    <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection1 = value.toString()}>
-                        {files.map((value: any) => {
-                            return <Option key={value.id} value={value.id}>{value.name}</Option>
+                    <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => fileSelection1 = value}>
+                        {files.map((file: any) => {
+                            return <Option className='select-option' key={file.name} value={file.id}><Text className='select-option'>{file.name + `\t\t`}</Text><Text>{file.date}</Text></Option>
                         })}
                     </Select>
                     <br></br>
@@ -203,9 +203,9 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                         console.log(fileSelection2)}}>Confirm Selection</Button>
                 </Col>
                 <Col span="12" className='file-select'>
-                    <Select placeholder="Select a File" style={{ width: 300 }} onChange={(value) => fileSelection2 = value.toString()}>
-                        {files.map((value: any) => {
-                            return <Option key={value.id} value={value.id}>{value.name}</Option>
+                    <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => fileSelection2 = value}>
+                        {files.map((file: any) => {
+                            return <Option key={file.name} value={file.id}><Text className='select-option'>{file.name + `\t\t`}</Text><Text>{file.date}</Text></Option>
                         })}
                     </Select>
                 </Col>
