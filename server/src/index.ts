@@ -132,7 +132,7 @@ let file1, file2, folder1, folder2, folder3;
 
 // file1 = new Code("code.py", "x = 1");
 file1 = new Code("code2.py", sampleCode2.join('\n'));
-file2 = new Code("index.py", "x = 2");
+file2 = new Code("index.py", sampleCode2.join('\n'));
 
 folder2 = new Folder("Subfolder", [file1]);
 folder1 = new Folder("Folder", [folder2, file2]);

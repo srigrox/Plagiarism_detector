@@ -7,10 +7,12 @@ export default class Code implements IFile {
     private code: Module;
     private id: string;
     private date: Date;
+    private rawCode: string
 
     // Parses the code in constructor and stores it in code.
     constructor(name: string, code: string) {
         this.name = name;
+        this.rawCode = code;
         this.code = parse(code);
         this.date = new Date();
         this.id = this.hash();
@@ -49,5 +51,9 @@ export default class Code implements IFile {
     // Returns date
     getDate(): string {
         return this.date.toLocaleTimeString([], {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    }
+
+    getRawCode(): string {
+        return this.rawCode;
     }
 }
