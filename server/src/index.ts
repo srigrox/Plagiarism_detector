@@ -200,11 +200,7 @@ app.post('/login', (req, res) => {
 
 // Route for getting all files
 app.get('/file', (req, res) => {
-  let files = application.getCurrentUser().getFiles();
-  let output: Array<Object> = [];
-  files.forEach((file) => output.push({ "name": file.getName(), "id": file.getID(), "date": file.getDate() }));
-  const out = { files: output };
-  res.status(200).send(out);
+  res.status(200).send({ "files": getFilesAndSend() });   
 });
 
 // Route for file upload
@@ -230,12 +226,22 @@ app.delete('/file', (req, res) => {
   
   try {
     application.getCurrentUser().removeFile(id);
-    res.status(200).send("File removed successfully");
+
+    res.status(200).send({ "files": getFilesAndSend() });    
+
   } catch (error) {
+    console.log(error)
     res.status(500).send("File not found");
   }
-    
 });
+
+function getFilesAndSend(): Array<Object> {
+  let files = application.getCurrentUser().getFiles();
+
+  let output: Array<Object> = [];
+  files.forEach((file) => output.push({ "name": file.getName(), "id": file.getID(), "date": file.getDate() }));
+  return output;
+}
 
 // Route for getting selected files
 app.get('/fileselection', (req, res) => {

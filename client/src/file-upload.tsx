@@ -16,8 +16,8 @@ export default class FileUploadComponent extends React.Component<{}, any> {
       selectedFile: null,
     };
     DataService.getListFiles().then((response: any) => {
-        this.setState({ uploadedFiles: response.data.files })
-    })
+      this.setState({ uploadedFiles: response.data.files });
+    });
   }
 
   uploadFile(value: any) {
@@ -88,9 +88,8 @@ export default class FileUploadComponent extends React.Component<{}, any> {
   };
 
   deleteUploaded(fileName: any) {
-    DataService.removeFile(fileName)
-      .then((response: any) => {
-        this.setState({ uploadFiles: response.data })
+    DataService.removeFile(fileName).then((response: any) => {
+        this.setState({ uploadedFiles: response.data.files });
       });
   }
 
