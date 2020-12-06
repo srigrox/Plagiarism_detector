@@ -1,5 +1,3 @@
-import IFile from "./IFile";
-import Folder from "./Folder";
 import Code from "./Code";
 import SelectedFiles from "./SelectedFiles";
 import { Block, ControlFlowGraph, SyntaxNode, walk } from "@msrvida/python-program-analysis";

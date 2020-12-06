@@ -1,8 +1,7 @@
 import { Module, parse } from "@msrvida/python-program-analysis";
 import { json } from "express";
-import  IFile from "./IFile";
 
-export default class Code implements IFile {
+export default class Code {
     private name: string;
     private code: Module;
     private plainCode: Array<string>;
@@ -35,7 +34,7 @@ export default class Code implements IFile {
     }
 
     // Returns list of subfiles of this file, which is none.
-    getSubFiles(): Array<IFile> {
+    getSubFiles(): Array<Code> {
         return [];
     }
 

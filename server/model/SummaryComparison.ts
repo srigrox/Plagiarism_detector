@@ -9,13 +9,17 @@ export default class SummaryComparison {
     private comparisons : Array<IComparison>;
     private plagiarismPercentage : number;
     private factory: ComparisonFactory;
-    private id: number;
-    // TODO: Implement factory
+    private id: string;
+    private date: Date;
 
     constructor(comparedFiles: SelectedFiles) {
         this.comparedFiles = comparedFiles;
         this.comparisons = [];
         this.factory = new ComparisonFactory();
+        let iterator = comparedFiles.getSelectedFiles().values()
+        this.id = (parseInt(iterator.next().value.getID()) 
+                  + parseInt(iterator.next().value.getID())).toString();
+        this.date = new Date();
         this.generateComparisons();
     }
 
@@ -29,6 +33,15 @@ export default class SummaryComparison {
 
     getPlagiarismPercentage(): number {
         return this.plagiarismPercentage;
+    }
+
+    getID(): string {
+        return this.id;
+    }
+
+    // Returns date.
+    getDate(): string {
+        return this.date.toLocaleTimeString([], {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
     }
 
     // Calls the algorithm and formats into backend

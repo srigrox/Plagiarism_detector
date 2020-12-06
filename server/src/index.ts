@@ -5,8 +5,6 @@ import Application from '../model/Application';
 import Code from '../model/Code';
 import User from '../model/User';
 import { use } from 'chai';
-import Folder from '../model/Folder';
-import IFile from '../model/IFile';
 import IComparison from '../model/IComparison';
 import SummaryComparison from '../model/SummaryComparison';
 
@@ -128,23 +126,16 @@ const todos = [
   { title: application.getCurrentUser().getFiles()[0].getCode().type }
 ];
 
-let file1, file2, folder1, folder2, folder3;
+let file1, file2;
 
 // file1 = new Code("code.py", "x = 1");
 file1 = new Code("code2.py", sampleCode2.join('\n'));
 file2 = new Code("index.py", sampleCode2.join('\n'));
 
-folder2 = new Folder("Subfolder", [file1]);
-folder1 = new Folder("Folder", [folder2, file2]);
-folder3 = new Folder("Folderr", [folder2]);
-
-//application.upload(folder1);
-//application.upload(folder2);
-//application.upload(folder3);
 application.upload(file1);
 application.upload(file2);
 
-application.selectFiles(file1, file2);
+application.selectFiles(file1.getID(), file2.getID());
 
 application.compare();
 
@@ -253,34 +244,26 @@ app.get('/fileselection', (req, res) => {
 // Route for selecting files
 app.post('/fileselection', (req, res) => {
   const files = application.getCurrentUser().getFiles();
-  if (req.body.file1 === req.body.file2) {
+  const file1 = req.body.file1;
+  const file2 = req.body.file2;
+  if (file1 === file2) {
     res.status(500).send("Files selected are the same");
     return
   }
-  
-  let file1: IFile, file2: IFile;
-  files.forEach((file) => {
-    let id = file.getID()
-    if (id === req.body.file1) {
-      file1 = file;
-    } else if (id === req.body.file2) {
-      file2 = file;
-    }
-  });
 
-  if(file1 !== undefined && file2 !== undefined) {
+  try {
     application.selectFiles(file1, file2);
     res.status(200).send("");
-  } else {
+  } catch (error) {
     res.status(500).send("One or more files were not found");
-  }
+  }    
 });
 
 // Route for getting the comparison related to the current selection
 app.get('/comparison', (req, res) => {
   let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
-  let file1: IFile = files.next().value;
-  let file2: IFile = files.next().value;
+  let file1: Code = files.next().value;
+  let file2: Code = files.next().value;
 
   let summaries = application.getCurrentUser().getComparisons();
 
@@ -318,28 +301,56 @@ app.get('/comparison', (req, res) => {
     }
   };
 
-  /*
-  let comparisons: Object[] = [];
-  let out = { "percentage": comparison.getPlagiarismPercentage(), "comparisons": comparisons};
-  comparison.getComparisons().forEach((comp) => {
-    console.log(comp);
-    
-    out.comparisons.push({ "line": 1, "severity": comp.getPlagiarismSeverity(),  }) // TODO: Change response
-  })
-  */
-
   res.status(200).send(response);
 });
 
 app.put('/comparison', (req, res) => {
-  let file1 = req.body.file1;
-  let file2 = req.body.file2;
+  let file1: string = req.body.file1;
+  let file2: string = req.body.file2;
 
-  application.selectFiles(file1, file2);
-  application.compare();
-
-  res.status(200).send({})
+  try {
+    application.selectFiles(file1, file2);
+    application.compare();
+    
+    res.status(200).send({});
+  } catch (error) {
+    res.status(500).send("Files not valid");
+  }
+  // TODO: Add response, all history or just one comparison?
 });
+
+app.get('/history', (req, res) => {
+  res.status(200).send({ "history": getHistoryAndSend() });
+});
+
+app.delete('/history', (req, res) => {
+  const id = req.query.file.toString();
+  
+  try {
+    application.getCurrentUser().removeComparison(id);
+    res.status(200).send({ "files": getHistoryAndSend() });    
+
+  } catch (error) {
+    res.status(500).send("File not found");
+  }
+});
+
+function getHistoryAndSend(): Array<Object> {
+  let comparisons = application.getCurrentUser().getComparisons();
+
+  let output: Array<Object> = [];
+  comparisons.forEach((comparison) => {
+    let iterator = comparison.getComparedFiles().getSelectedFiles().values()
+    output.push({ 
+      "file1": iterator.next().value.getName(),
+      "file2": iterator.next().value.getName(),
+      "id": comparison.getID(),
+      "date": comparison.getDate(),
+      "similarity": "?%" })
+  });
+
+  return output;
+}
 
 /* 
   Catch all route which matches any type of request on any route.

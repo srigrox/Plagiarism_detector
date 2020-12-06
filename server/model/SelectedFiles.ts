@@ -1,15 +1,14 @@
-import IFile from "./IFile";
-
+import Code from "./Code";
 
 export default class SelectedFiles {
-    private files: Set<IFile> = new Set();
+    private files: Set<Code> = new Set();
     
-    constructor(file1: IFile, file2: IFile) {
+    constructor(file1: Code, file2: Code) {
         this.files.add(file1);
         this.files.add(file2);
     }
 
-    getSelectedFiles(): Set<IFile> {
+    getSelectedFiles(): Set<Code> {
         return this.files;
     }
 }
