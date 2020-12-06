@@ -43,8 +43,8 @@ export class DataService {
   }
 
   // remove history from list of history
-  public static removeHistory(file1: string, file2: string) {
-    return axios.delete('http://localhost:3001/history', {data: {file1: file1, file2: file2}})
+  public static removeHistory(id: string) {
+    return axios.delete('http://localhost:3001/history?file=' + id)
       .catch((error: Error): any => {
         console.error('Something went wrong: ', error.message);
         return { data: [] };

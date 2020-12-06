@@ -1,5 +1,5 @@
 import { FileSearchOutlined } from "@ant-design/icons";
-import { Row, Col, Button, Tooltip, Select } from "antd";
+import { Row, Col, Button, Tooltip, Select, message } from "antd";
 import Content from "antd/lib/layout/layout";
 import React from "react";
 import { PlagiarismAppState } from "./plagiarism.interface";
@@ -56,6 +56,8 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
             tab: "textdiff",
             comparison: null,
             textDiff: null,
+            fileSelection1: null,
+            fileSelection2: null,
         }
 
         DataService.getListFiles()
@@ -65,7 +67,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     onConfirm(file1: any, file2: any) {
-        if (file1) {
+        if (file1 != null && file2 != null) {
             console.log("okau")
             this.setState({
                 select1: file1.label[0],
@@ -83,6 +85,9 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                         textDiff: response.data.textDiff,
                     })
                 })
+        } else {
+            message.error('Please reselect files');
+            return;
         }
     }
 
@@ -99,6 +104,18 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         }
     }
 
+    handleChange(value: any, file: number){
+        if(file === 0){
+        this.setState({
+            fileSelection1: value
+        })
+    } else {
+        this.setState({
+            fileSelection2: value
+        })
+    }
+    }
+
     renderTextDiff(file: number) {
         console.log("what about here ", this.state)
         const { file1code, file2code, textDiff } = this.state;
@@ -112,14 +129,15 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
             });
             for (let i = 0; i < file1code.length; i++) {
                 for (let j = 0; j < compare.length; j++) {
-                    if (file === 0) {
-                        //console.log("will" + compare[j][0] + compare[j][1] + out1[i].detect)
                         if (i >= compare[j][0] && i <= compare[j][1]) {
                             let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
                             out1[i].detect = true;
                             out1[i].codeLines = lines1;
                         }
-                    } else {
+            }
+
+            for (let i = 0; i < file1code.length; i++) {
+                for (let j = 0; j < compare.length; j++) {
                         if (i >= compare[j][2] && i <= compare[j][3]) {
                             let lines2 = [compare[j][0].toString(), compare[j][1].toString()]
                             out2[i].detect = true;
@@ -160,22 +178,30 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
             let out2 = file2code.map((file: any) => {
                 return { "code": file, "detect": false, "type": "", "percent": '' };
             });
-            for (let i = 0; i < samplecode1.length; i++) {
+
+            for (let i = 0; i < file1code.length; i++) {
                 for (let j = 0; j < compare.length; j++) {
-                    if (file === 0) {
                         if (i >= compare[j][0] && i <= compare[j][1]) {
-                            out1[i].detect = true
+                            let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
+                            out1[i].detect = true;
+                            out1[i].codeLines = lines1;
                             out1[i].type = compare[j][4].toString()
                             out1[i].percent = compare[j][5].toString()
                         }
-                    } else {
+            }
+
+            for (let i = 0; i < file1code.length; i++) {
+                for (let j = 0; j < compare.length; j++) {
                         if (i >= compare[j][2] && i <= compare[j][3]) {
+                            let lines2 = [compare[j][0].toString(), compare[j][1].toString()]
                             out2[i].detect = true;
+                            out2[i].codeLines = lines2;
                             out2[i].type = compare[j][4].toString()
                             out2[i].percent = compare[j][5].toString()
                         }
                     }
                 }
+
             }
 
             let out = file === 0 ? out1 : out2;
@@ -199,9 +225,11 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     renderPercentage() {
-        const { tab } = this.state;
+        const { tab, comparison, textDiff} = this.state;
+        if (comparison != null && textDiff != null){
         let color = "";
-        let percentage = tab === "textdiff" ? plagiarism1.plagiarism : plagiarism2.plagiarism
+        let percentage = tab === "textdiff" ? Math.round(textDiff.plagiarism) : Math.round(comparison.plagiarism)
+        console.log("what is my percentage", percentage);
 
         if (percentage >= 0 && percentage < 30) {
             color = "green"
@@ -215,17 +243,15 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
 
         return <h2 style={{ color: color, paddingRight: '5px' }}>{percentage + "%"}</h2>
     }
-    //{tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
-    render() {
-        let fileSelection1: any;
-        let fileSelection2: any;
+    }
 
-        const { files, select1, select2, tab, comparison } = this.state;
+    render() {
+    const { files, select1, select2, tab, fileSelection1, fileSelection2 } = this.state;
 
         return <Content className="inner">
             <Row>
                 <Col span="12" className='file-select'>
-                    <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => fileSelection1 = value}>
+                    <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => this.handleChange(value, 0)}>
                         {files.map((file: any) => {
                             return <Option key={file.name} value={file.id}><Text className='select-option'>{file.name + `\t\t`}</Text><Text>{file.date}</Text></Option>
                         })}
@@ -234,12 +260,14 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                     <br></br>
                     <Button type="primary" onClick={() => {
                         this.onConfirm(fileSelection1, fileSelection2)
-                        fileSelection1 = null;
-                        fileSelection2 = null;
+                        this.setState({
+                            fileSelection1: null,
+                            fileSelection2: null,
+                        })
                     }}>Confirm Selection</Button>
                 </Col>
                 <Col span="12" className='file-select'>
-                    <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => fileSelection2 = value}>
+                    <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => this.handleChange(value, 1)}>
                         {files.map((file: any) => {
                             return <Option key={file.name} value={file.id}><Text className='select-option'>{file.name + `\t\t`}</Text><Text>{file.date}</Text></Option>
                         })}
@@ -255,7 +283,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                 <Col span="12" className='code-body'>
                     <h2>{select1}</h2>
                     <div className="code-container col-12">
-                        {tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
+                        {tab === "textdiff" ? this.renderTextDiff(0) : this.renderComparison(0)}
                     </div>
                 </Col>
 
