@@ -12,6 +12,15 @@ export class DataService {
       });
   }
 
+  // Get comparison 
+  public static getComparisons(): Promise<any> {
+    return axios.get('http://localhost:3001/comparison')
+    .catch((error: Error): any => {
+      console.error('Something went wrong: ', error.message);
+      return { data: [] };
+    });
+  }
+
   // post the 2 files selected by user
   public static postFileSelection(file1: string, file2: string) {
     const formData = new FormData();
