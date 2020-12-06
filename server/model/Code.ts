@@ -1,19 +1,18 @@
 import { Module, parse } from "@msrvida/python-program-analysis";
 import { json } from "express";
-import  IFile from "./IFile";
 
-export default class Code implements IFile {
+export default class Code {
     private name: string;
     private code: Module;
+    private plainCode: Array<string>;
     private id: string;
     private date: Date;
-    private rawCode: string
 
     // Parses the code in constructor and stores it in code.
     constructor(name: string, code: string) {
         this.name = name;
-        this.rawCode = code;
         this.code = parse(code);
+        this.plainCode = code.split("\n");
         this.date = new Date();
         this.id = this.hash();
     }
@@ -29,12 +28,13 @@ export default class Code implements IFile {
         return out.toString();
     }
 
+    // Returns name.
     getName(): string {
         return this.name;
     }
 
     // Returns list of subfiles of this file, which is none.
-    getSubFiles(): Array<IFile> {
+    getSubFiles(): Array<Code> {
         return [];
     }
 
@@ -43,17 +43,18 @@ export default class Code implements IFile {
         return this.code;
     }
 
-    // Returns file ID
+    // Gets plain code.
+    getPlainCode(): Array<string> {
+        return this.plainCode;
+    }
+
+    // Returns file ID.
     getID(): string {
         return this.id;
     }
 
-    // Returns date
+    // Returns date.
     getDate(): string {
         return this.date.toLocaleTimeString([], {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'});
-    }
-
-    getRawCode(): string {
-        return this.rawCode;
     }
 }

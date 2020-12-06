@@ -1,17 +1,16 @@
-import Abstraction from "./Abstraction";
-import RenamedVars from "./RenamedVars";
+import Content from "./Content";
+import IComparison from "./IComparison";
 import TextualDiff from "./TextualDiff";
 
 export default class ComparisonFactory {
-    public makeRenamedVars(): RenamedVars {
-        return new RenamedVars();
-    }
-
-    public makeTextualDiff(): TextualDiff {
-        return new TextualDiff();
-    }
-
-    public makeAbstraction(): Abstraction {
-        return new Abstraction();
+    
+    public makeComparison(comp: string): IComparison {
+        if (comp === "content") {
+            return new Content();
+        } else if (comp === "textDiff") {
+            return new TextualDiff();
+        } else {
+            return undefined;
+        }
     }
 }

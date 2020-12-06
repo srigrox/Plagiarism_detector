@@ -1,18 +1,19 @@
-import IFile from "./IFile";
+import Code from "./Code";
+import IComparison from "./IComparison";
 import SelectedFiles from "./SelectedFiles";
 import SummaryComparison from "./SummaryComparison";
 
 export default class User {
     private username: string;
     private password: string;
-    private files: Array<IFile>;
+    private files: Array<Code>;
     private comparisons: Array<SummaryComparison>;
     selectedFiles?: SelectedFiles;
 
     constructor(username: string, password: string, ) {
         this.username = username;
         this.password = password;
-        this.files = Array<IFile>();
+        this.files = Array<Code>();
         this.comparisons = Array<SummaryComparison>();
     }
 
@@ -20,7 +21,7 @@ export default class User {
         return this.username;
     }
 
-    getFiles(): Array<IFile> {
+    getFiles(): Array<Code> {
         return this.files;
     }
 
@@ -28,7 +29,17 @@ export default class User {
         return this.comparisons;
     }
 
-    uploadFile(file: IFile): void {
+    removeComparison(id: string): void {
+        const index = this.comparisons.findIndex((f) => f.getID() === id);
+
+        if (index > -1) {
+            this.comparisons.splice(index, 1);
+        } else {
+            throw new Error("Comparison not found");
+        }
+    }
+
+    uploadFile(file: Code): void {
         this.files.push(file);
     }
 
@@ -42,11 +53,43 @@ export default class User {
         }
     }
 
-    createSelection(file1: IFile, file2: IFile): void {
-        this.selectedFiles = new SelectedFiles(file1, file2);
+    createSelection(f1: string, f2: string): void {
+        let file1: Code
+        let file2: Code
+
+        this.files.forEach((file) => {
+            const id = file.getID()
+            if(id === f1) {
+                file1 = file;
+            } else if(id === f2) {
+                file2 = file;
+            }
+        })
+
+        if(file1 === undefined || file2 === undefined) {
+            throw new Error("One or more files not found");
+        } else {
+            this.selectedFiles = new SelectedFiles(file1, file2);
+        }
     }
 
     makeSummary(): void {
-        this.comparisons.push(new SummaryComparison(this.selectedFiles));
+        let iterator = this.selectedFiles.getSelectedFiles().values();
+        let file1: string = iterator.next().value.getID();
+        let file2: string = iterator.next().value.getID();
+        let id = (parseInt(file1) + parseInt(file2)).toString();
+
+        let comparison: SummaryComparison;
+        this.comparisons.forEach((comp) => {
+            if(comp.getID() === id) {
+                comparison = comp;
+            }
+        });
+
+        if(comparison === undefined) {
+            this.comparisons.push(new SummaryComparison(this.selectedFiles));
+        } else {
+            throw new Error("Comparison already exists.");
+        }
     }
 }

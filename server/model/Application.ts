@@ -1,4 +1,4 @@
-import IFile from "./IFile";
+import Code from "./Code";
 import User from "./User";
 
 export default class Application {
@@ -53,7 +53,7 @@ export default class Application {
         this.setCurrentUser(user);
     }
 
-    upload(file: IFile) : void {
+    upload(file: Code) : void {
         if (this.currentUser !== null) {
             this.currentUser.uploadFile(file)
         } else {
@@ -65,12 +65,11 @@ export default class Application {
         this.currentUser = null;
     }
 
-    selectFiles(file1: IFile, file2: IFile): void {
+    selectFiles(file1: string, file2: string): void {
         this.currentUser.createSelection(file1, file2);
     }
 
     compare() : void {
         this.currentUser.makeSummary();
     }
-
 }
