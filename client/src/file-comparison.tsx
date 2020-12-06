@@ -78,10 +78,10 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         .then((response) => {
             console.log("i got here!!!", response)
             this.setState({
-                file1code: response.file1,
-                file2code: response.file2,
-                comparison: response.content,
-                textDiff: response.textDiff,
+                file1code: response.data.file1,
+                file2code: response.data.file2,
+                comparison: response.data.content,
+                textDiff: response.data.textDiff,
             })
         })
     }
