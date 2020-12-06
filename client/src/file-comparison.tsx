@@ -73,8 +73,17 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
             })
         }
         console.log(file1.value, file2.value)
-        DataService.postFileSelection(file1.value, file2.value)
-        .then(() => DataService.getComparisons().then((response) => console.log("i made it", response)))
+        DataService.postComparison(file1.value, file2.value)
+        .then(() => DataService.getComparisons())
+        .then((response) => {
+            console.log("i got here!!!", response)
+            this.setState({
+                file1code: response.file1,
+                file2code: response.file2,
+                comparison: response.content,
+                textDiff: response.textDiff,
+            })
+        })
     }
 
     onChangeTab() {
@@ -91,16 +100,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     renderTextDiff(file: number) {
-        DataService.getComparisons()
-        .then((response) => {
-            console.log("i got here!!!", response)
-            this.setState({
-                file1code: response.file1,
-                file2code: response.file2,
-                comparison: response.content,
-                textDiff: response.textDiff,
-            })
-        })
+        console.log("what about here ", this.state)
         const { file1code, file2code, comparison } = this.state;
         const compare = comparison.compare;
         let out1 = file1code.map((line: any) => {

@@ -22,11 +22,11 @@ export class DataService {
   }
 
   // post the 2 files selected by user
-  public static postFileSelection(file1: string, file2: string) {
+  public static postComparison(file1: string, file2: string) {
     const formData = new FormData();
     formData.append("file1", file1);
     formData.append("file2", file2);
-    return axios.post('http://localhost:3001/fileselection', formData)
+    return axios.post('http://localhost:3001/comparison', formData)
       .catch((error: Error): any => {
         console.error('Something went wrong: ', error.message);
         return { data: [] };
@@ -52,8 +52,8 @@ export class DataService {
   }
 
   // get list of summary of past comparisons
-  public static getHistory(): Promise<Array<Array<string>>> {
-    return axios.get<Array<Array<string>>>('http://localhost:3001/history')
+  public static getHistory(): Promise<Array<any>> {
+    return axios.get<Array<any>>('http://localhost:3001/history')
       .catch((error: Error): any => {
         console.error('Something went wrong: ', error.message);
         return { data: [] };

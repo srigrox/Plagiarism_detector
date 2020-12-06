@@ -1,6 +1,8 @@
 import { Button, Space, Table } from "antd";
 import Content from "antd/lib/layout/layout";
 import React from "react";
+import { isNullOrUndefined } from "util";
+import { DataService } from "./data-service";
 import { PlagiarismAppState } from "./plagiarism.interface";
 
 const columns = [
@@ -33,7 +35,7 @@ const columns = [
     },
   ];
 
-const data = [
+const dataFake = [
     {
         key: '1',
         date: '10/1/20',
@@ -64,13 +66,33 @@ const data = [
     }
 ]
 
-export default class FileHistoryComponent extends React.Component<{}, PlagiarismAppState> {
+export default class FileHistoryComponent extends React.Component<{}, any> {
+/*
+    constructor(props: {}) {
+        super(props);
+
+        this.state = {
+            history: []
+        }
+      }
+
+    componentDidMount(){
+        DataService.getHistory()
+        .then((response) => {
+            if(response)
+            this.setState({
+                history: response
+            })
+        })
+    }
+    */
 
     render() {
+        const { history } = this.state;
         return <Content className='inner'>
             <Table
             columns={columns}
-            dataSource={data}>
+            dataSource={dataFake}>
             </Table>
         </Content>
     }
