@@ -101,8 +101,8 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
 
     renderTextDiff(file: number) {
         console.log("what about here ", this.state)
-        const { file1code, file2code, comparison } = this.state;
-        const compare = comparison.compare;
+        const { file1code, file2code, textDiff } = this.state;
+        const compare = textDiff.compare;
         let out1 = file1code.map((line: any) => {
             return { "code": line, "detect": false, "codeLines": [] as any};
         });
@@ -112,6 +112,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         for (let i = 0; i < file1code.length; i++) {
             for (let j = 0; j < compare.length; j++) {
                 if (file === 0) {
+                    //console.log("will" + compare[j][0] + compare[j][1] + out1[i].detect)
                     if (i >= compare[j][0] && i <= compare[j][1]) {
                         let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
                         out1[i].detect = true;
