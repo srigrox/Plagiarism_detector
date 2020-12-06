@@ -65,25 +65,25 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     onConfirm(file1: any, file2: any) {
-        if (file1){
-            console.log("okau") 
+        if (file1) {
+            console.log("okau")
             this.setState({
                 select1: file1.label[0],
                 select2: file2.label[0],
             })
+            console.log(file1.value, file2.value)
+            DataService.postComparison(file1.value, file2.value)
+                .then(() => DataService.getComparisons())
+                .then((response) => {
+                    console.log("i got here!!!", response)
+                    this.setState({
+                        file1code: response.data.file1,
+                        file2code: response.data.file2,
+                        comparison: response.data.content,
+                        textDiff: response.data.textDiff,
+                    })
+                })
         }
-        console.log(file1.value, file2.value)
-        DataService.postComparison(file1.value, file2.value)
-        .then(() => DataService.getComparisons())
-        .then((response) => {
-            console.log("i got here!!!", response)
-            this.setState({
-                file1code: response.data.file1,
-                file2code: response.data.file2,
-                comparison: response.data.content,
-                textDiff: response.data.textDiff,
-            })
-        })
     }
 
     onChangeTab() {
@@ -102,116 +102,120 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     renderTextDiff(file: number) {
         console.log("what about here ", this.state)
         const { file1code, file2code, textDiff } = this.state;
-        const compare = textDiff.compare;
-        let out1 = file1code.map((line: any) => {
-            return { "code": line, "detect": false, "codeLines": [] as any};
-        });
-        let out2 = file2code.map((line: any) => {
-            return { "code": line, "detect": false, "codeLines": [] as any};
-        });
-        for (let i = 0; i < file1code.length; i++) {
-            for (let j = 0; j < compare.length; j++) {
-                if (file === 0) {
-                    //console.log("will" + compare[j][0] + compare[j][1] + out1[i].detect)
-                    if (i >= compare[j][0] && i <= compare[j][1]) {
-                        let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
-                        out1[i].detect = true;
-                        out1[i].codeLines = lines1;
-                    }
-                } else {
-                    if (i >= compare[j][2] && i <= compare[j][3]) {
-                        let lines2 = [compare[j][0].toString(), compare[j][1].toString()]
-                        out2[i].detect = true;
-                        out2[i].codeLines = lines2;
+        if (textDiff != null) {
+            const compare = textDiff.compare;
+            let out1 = file1code.map((line: any) => {
+                return { "code": line, "detect": false, "codeLines": [] as any };
+            });
+            let out2 = file2code.map((line: any) => {
+                return { "code": line, "detect": false, "codeLines": [] as any };
+            });
+            for (let i = 0; i < file1code.length; i++) {
+                for (let j = 0; j < compare.length; j++) {
+                    if (file === 0) {
+                        //console.log("will" + compare[j][0] + compare[j][1] + out1[i].detect)
+                        if (i >= compare[j][0] && i <= compare[j][1]) {
+                            let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
+                            out1[i].detect = true;
+                            out1[i].codeLines = lines1;
+                        }
+                    } else {
+                        if (i >= compare[j][2] && i <= compare[j][3]) {
+                            let lines2 = [compare[j][0].toString(), compare[j][1].toString()]
+                            out2[i].detect = true;
+                            out2[i].codeLines = lines2;
+                        }
                     }
                 }
-            }
-        }
 
-        let out = file === 0 ? out1 : out2;
-        return <div>
-            {out.map((line: any, index: number = 0) => {
-                let tipText;
-                if (line.detect) {
-                    tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
-                    <p>Lines Compared: </p>
-                    <p> {line.codeLines[0]} to {line.codeLines[1]}</p>
-                    </div>
-                }
-                return <Tooltip placement="leftTop" title={tipText}>
-                    <code className={"line"}>{index + 1}</code>
-                    <code className={line.detect ? 'is-plagerized' : ''}>{line.code}</code>
-                </Tooltip>
-            })}
-        </div>
+            }
+
+            let out = file === 0 ? out1 : out2;
+            return <div>
+                {out.map((line: any, index: number = 0) => {
+                    let tipText;
+                    if (line.detect) {
+                        tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
+                            <p>Lines Compared: </p>
+                            <p> {line.codeLines[0]} to {line.codeLines[1]}</p>
+                        </div>
+                    }
+                    return <Tooltip placement="leftTop" title={tipText}>
+                        <code className={"line"}>{index + 1}</code>
+                        <code className={line.detect ? 'is-plagerized' : ''}>{line.code}</code>
+                    </Tooltip>
+                })}
+            </div>
+        }
     }
 
-    renderComparison(file: number){
+    renderComparison(file: number) {
         console.log("render comaprison", this.state)
         const { file1code, file2code, comparison } = this.state;
-        const compare = comparison.compare;
-        let out1 = file1code.map((file: any) => {
-            return { "code": file, "detect": false, "type": "", "percent": ''};
-        });
-        let out2 = file2code.map((file: any) => {
-            return { "code": file, "detect": false, "type": "", "percent": ''};
-        });
-        for (let i = 0; i < samplecode1.length; i++) {
-            for (let j = 0; j < compare.length; j++) {
-                if (file === 0) {
-                    if (i >= compare[j][0] && i <= compare[j][1]) {
-                        out1[i].detect = true
-                        out1[i].type = compare[j][4].toString()
-                        out1[i].percent = compare[j][5].toString()
-                    }
-                } else {
-                    if (i >= compare[j][2] && i <= compare[j][3]) {
-                        out2[i].detect = true;
-                        out2[i].type = compare[j][4].toString()
-                        out2[i].percent = compare[j][5].toString()
+        if (comparison != null) {
+            const compare = comparison.compare;
+            let out1 = file1code.map((file: any) => {
+                return { "code": file, "detect": false, "type": "", "percent": '' };
+            });
+            let out2 = file2code.map((file: any) => {
+                return { "code": file, "detect": false, "type": "", "percent": '' };
+            });
+            for (let i = 0; i < samplecode1.length; i++) {
+                for (let j = 0; j < compare.length; j++) {
+                    if (file === 0) {
+                        if (i >= compare[j][0] && i <= compare[j][1]) {
+                            out1[i].detect = true
+                            out1[i].type = compare[j][4].toString()
+                            out1[i].percent = compare[j][5].toString()
+                        }
+                    } else {
+                        if (i >= compare[j][2] && i <= compare[j][3]) {
+                            out2[i].detect = true;
+                            out2[i].type = compare[j][4].toString()
+                            out2[i].percent = compare[j][5].toString()
+                        }
                     }
                 }
             }
+
+            let out = file === 0 ? out1 : out2;
+            return <div>
+                {out.map((line: any, index: number = 0) => {
+                    let tipText;
+                    if (line.detect) {
+                        tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
+                            <p>Similarity</p>
+                            <p>Type: {line.type}</p>
+                        </div>
+                    }
+                    return <Tooltip placement="leftTop" title={tipText}>
+                        <code className={"line"}>{index + 1}</code>
+                        <code className={line.detect ? 'is-plagerized' : ''}>{line.code}</code>
+                    </Tooltip>
+                })}
+            </div>
         }
-
-        let out = file === 0 ? out1 : out2;
-        return <div>
-        {out.map((line: any, index: number = 0) => {
-            let tipText;
-            if (line.detect) {
-                tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
-                    <p>Similarity</p>
-                    <p>Type: {line.type}</p>
-                </div>
-            }
-            return <Tooltip placement="leftTop" title={tipText}>
-                <code className={"line"}>{index + 1}</code>
-                <code className={line.detect ? 'is-plagerized' : ''}>{line.code}</code>
-            </Tooltip>
-        })}
-        </div>
-
 
     }
 
-    renderPercentage(){
+    renderPercentage() {
         const { tab } = this.state;
         let color = "";
         let percentage = tab === "textdiff" ? plagiarism1.plagiarism : plagiarism2.plagiarism
 
-        if(percentage >= 0 && percentage < 30){
+        if (percentage >= 0 && percentage < 30) {
             color = "green"
-        } else if (percentage >= 30 && percentage < 60){
+        } else if (percentage >= 30 && percentage < 60) {
             color = "yellow"
-        } else if (percentage >= 60 && percentage < 80){
+        } else if (percentage >= 60 && percentage < 80) {
             color = "orange"
         } else {
             color = "red"
         }
 
-    return <h2 style={{ color: color, paddingRight: '5px' }}>{percentage + "%"}</h2>
+        return <h2 style={{ color: color, paddingRight: '5px' }}>{percentage + "%"}</h2>
     }
-//{tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
+    //{tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
     render() {
         let fileSelection1: any;
         let fileSelection2: any;
@@ -229,7 +233,10 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                     <br></br>
                     <br></br>
                     <Button type="primary" onClick={() => {
-                        this.onConfirm(fileSelection1, fileSelection2)}}>Confirm Selection</Button>
+                        this.onConfirm(fileSelection1, fileSelection2)
+                        fileSelection1 = null;
+                        fileSelection2 = null;
+                    }}>Confirm Selection</Button>
                 </Col>
                 <Col span="12" className='file-select'>
                     <Select labelInValue placeholder="Select a File" style={{ width: '100%' }} onChange={(value) => fileSelection2 = value}>
@@ -248,14 +255,14 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                 <Col span="12" className='code-body'>
                     <h2>{select1}</h2>
                     <div className="code-container col-12">
-                        {comparison != null ? this.renderTextDiff(0) : ""}
+                        {tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
                     </div>
                 </Col>
 
                 <Col span="12" className='code-body'>
                     <h2>{select2}</h2>
                     <div className="code-container col-12">
-                        {comparison != null ? this.renderTextDiff(1) : ""}
+                        {tab === "textdiff" ? this.renderTextDiff(1) : this.renderComparison(1)}
                     </div>
                 </Col>
 
