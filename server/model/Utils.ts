@@ -10,6 +10,8 @@ export function compareAlgorithm(selectedFiles: SelectedFiles) {
     let file1 : Code = iterator.next().value
     let file2 : Code = iterator.next().value
 
+    console.log(compare(file1, file2), "co")
+
     return compare(file1, file2)
 }
 

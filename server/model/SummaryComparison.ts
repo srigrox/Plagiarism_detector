@@ -54,7 +54,7 @@ export default class SummaryComparison {
         content.setLines(algoOutput.content_check["Line numbers"])
         this.comparisons.push(content);
 
-        let lines: Array<Array<Array<number> | string>> = algoOutput["textual diff"].map((line) => {
+        let lines: Array<Array<Array<number> | string>> = algoOutput["textual diff"]["Line numbers"].map((line) => {
             return [line.slice(0, 2), line.slice(2, 4), "textDiff"];
         })
 
