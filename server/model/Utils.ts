@@ -160,9 +160,11 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": Number, "Line numbers":
     return {"Plagarised" : ((simBlocks.length/blocks1.length) * 100), "Line numbers": line_numbers}
 }
 
-function textualDiff(f1 : Code, f2: Code) : Array<Array<number>>{
+function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers": number[][]}{
     let t1 = f1.getRawCode()
     let t2 = f2.getRawCode()
+
+    let z = 0
 
     let similar = []
 
@@ -176,9 +178,16 @@ function textualDiff(f1 : Code, f2: Code) : Array<Array<number>>{
         }
     }
 
+    if(x.length > y.length) {
+        z = ((similar.length/x.length) * 100)
+    }
+    else {
+        z = ((similar.length/y.length) * 100)
+    }
+
     compressSimilarity(similar)
 
-    return similar
+    return {"Plagarised": z, "Line numbers": similar}
 }
 
 function compressSimilarity(list: Array<Array<number>>)  {
