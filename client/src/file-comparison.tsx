@@ -66,12 +66,13 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
 
     onConfirm(file1: any, file2: any) {
         if (file1){
-        console.log("okau") 
-        this.setState({
-            select1: file1.label[0],
-            select2: file2.label[0],
-        })
-    }
+            console.log("okau") 
+            this.setState({
+                select1: file1.label[0],
+                select2: file2.label[0],
+            })
+        }
+        console.log(file1.value, file2.value)
         DataService.postFileSelection(file1.value, file2.value)
         .then(() => DataService.getComparisons().then((response) => console.log("i made it", response)))
     }

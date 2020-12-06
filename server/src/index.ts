@@ -268,10 +268,10 @@ app.get('/comparison', (req, res) => {
   let summaries = application.getCurrentUser().getComparisons();
 
   let comparison: SummaryComparison;
-  // Search the summary comparisons for matching comparison, TODO: Use IDs
+  // Search the summary comparisons for matching comparison
   summaries.forEach((s) => {
     let selFiles = s.getComparedFiles().getSelectedFiles().values();
-    if(file1 === selFiles.next().value && file2 === selFiles.next().value) {
+    if(file1.getID() === selFiles.next().value.getID() && file2.getID() === selFiles.next().value.getID()) {
       comparison = s;
     }
   });
@@ -304,7 +304,7 @@ app.get('/comparison', (req, res) => {
   res.status(200).send(response);
 });
 
-app.put('/comparison', (req, res) => {
+app.post('/comparison', (req, res) => {
   let file1: string = req.body.file1;
   let file2: string = req.body.file2;
 
