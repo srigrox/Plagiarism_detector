@@ -86,10 +86,10 @@ export default class User {
             }
         });
 
-        if(comparison === undefined) {
-            this.comparisons.push(new SummaryComparison(this.selectedFiles));
-        } else {
-            throw new Error("Comparison already exists.");
-        }
+        if(comparison !== undefined) {
+            let index = this.comparisons.findIndex((comp) => comp.getID());
+            this.comparisons.splice(index, 1)
+        } 
+        this.comparisons.push(new SummaryComparison(this.selectedFiles));
     }
 }
