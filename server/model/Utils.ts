@@ -5,7 +5,7 @@ import SelectedFiles from "./SelectedFiles";
 import { Block, ControlFlowGraph, SyntaxNode, walk } from "@msrvida/python-program-analysis";
 
 
-export function folderStructureCompare(selectedFiles: SelectedFiles) {
+export function compareAlgorithm(selectedFiles: SelectedFiles) {
 
     let iterator = selectedFiles.getSelectedFiles().values()
 
@@ -13,14 +13,13 @@ export function folderStructureCompare(selectedFiles: SelectedFiles) {
     let file2 : Code = iterator.next().value
 
     return compare(file1, file2)
-
 }
 
 function compare(f1:Code, f2:Code) {
     return {"content_check" : compareFiles(f1, f2), "textual diff" : textualDiff(f1, f2)}
 }
 
-function compareFiles(f1:Code, f2:Code) : {"Plagarised": Number, "Line numbers": (("assign" | number[])[] | ("binop" | number[])[] | ("literal" | number[])[] | ("call" | number[])[] | ("def" | number[])[] | ("else" | number[])[])[]} {
+function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers": (("assign" | number[])[] | ("binop" | number[])[] | ("literal" | number[])[] | ("call" | number[])[] | ("def" | number[])[] | ("else" | number[])[])[]} {
     let c1 = f1.getCode() 
     let c2 = f2.getCode() 
 
@@ -161,13 +160,10 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": Number, "Line numbers":
 }
 
 function textualDiff(f1 : Code, f2: Code) : Array<Array<number>>{
-    let t1 = f1.getRawCode()
-    let t2 = f2.getRawCode()
-
     let similar = []
 
-    let x = t1.split("\n")
-    let y = t2.split("\n")
+    let x = f1.getPlainCode()
+    let y = f2.getPlainCode()
     for(let u = 0; u < x.length; u++) {
         for(let w = 0; w < y.length; w ++) {
             if( x[u].trim() == y[w].trim() ) {

@@ -7,8 +7,11 @@ export default interface IFile {
     // Gets list of subfiles of this file
     getSubFiles(): Array<IFile>;
 
-    // Gets code from file or all subfiles in a list.
+    // Gets code from file or all subfiles in a list
     getCode(): Module;
+
+    // Gets plain code
+    getPlainCode(): Array<string>;
 
     // Gets file ID
     getID(): string;

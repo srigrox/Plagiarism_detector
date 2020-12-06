@@ -1,12 +1,11 @@
 import IComparison from "./IComparison";
 
-export default class TextualDiff implements IComparison {
+export default class Content implements IComparison {
     private comparedFiles: any;
     private starred: boolean;
     private ignored: boolean;
     summary: string;
     private plagiarismSeverity: number;
-
     private linesAffected: Array<Array<Array<number> | string>>;
 
     getPlagiarismSeverity(): number {
@@ -20,7 +19,7 @@ export default class TextualDiff implements IComparison {
     getLines(): Array<Array<Array<number> | string>> {
         return this.linesAffected;
     }
-    
+
     setLines(lines: Array<Array<Array<number> | string>>): void {
         this.linesAffected = lines;
     }
@@ -28,7 +27,7 @@ export default class TextualDiff implements IComparison {
     flipStar(): void {
         throw new Error("Method not implemented.");
     }
-
+    
     flipIgnored(): void {
         throw new Error("Method not implemented.");
     }

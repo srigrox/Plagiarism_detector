@@ -148,6 +148,7 @@ application.selectFiles(file1, file2);
 
 application.compare();
 
+/*
 app.get('/todo', (req, res) => {
   res.status(200).send(todos);
 });
@@ -169,6 +170,7 @@ app.delete('/todo', (req, res) => {
     res.status(500).send('Todo not found');
   }
 });
+*/
 
 // Register Route
 app.post('/register', (req, res) => {
@@ -204,7 +206,6 @@ app.get('/file', (req, res) => {
 });
 
 // Route for file upload
-// Possible TODO: Add date/time of upload
 app.post('/file', (req, res) => {
   const uploadedFiles = req.files
   const keys = Object.keys(uploadedFiles);
@@ -221,7 +222,6 @@ app.post('/file', (req, res) => {
 });
 
 app.delete('/file', (req, res) => {
-  
   const id = req.query.file.toString();
   
   try {
@@ -230,7 +230,6 @@ app.delete('/file', (req, res) => {
     res.status(200).send({ "files": getFilesAndSend() });    
 
   } catch (error) {
-    console.log(error)
     res.status(500).send("File not found");
   }
 });
@@ -254,7 +253,11 @@ app.get('/fileselection', (req, res) => {
 // Route for selecting files
 app.post('/fileselection', (req, res) => {
   const files = application.getCurrentUser().getFiles();
-  // TODO: Check if the request files are the same name
+  if (req.body.file1 === req.body.file2) {
+    res.status(500).send("Files selected are the same");
+    return
+  }
+  
   let file1: IFile, file2: IFile;
   files.forEach((file) => {
     let id = file.getID()
@@ -267,34 +270,75 @@ app.post('/fileselection', (req, res) => {
 
   if(file1 !== undefined && file2 !== undefined) {
     application.selectFiles(file1, file2);
-    res.status(200).send("Files selected successfully");
+    res.status(200).send("");
   } else {
     res.status(500).send("One or more files were not found");
   }
 });
 
+// Route for getting the comparison related to the current selection
 app.get('/comparison', (req, res) => {
   let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
-  let file1 = files.next().value;
-  let file2 = files.next().value;
+  let file1: IFile = files.next().value;
+  let file2: IFile = files.next().value;
 
   let summaries = application.getCurrentUser().getComparisons();
 
   let comparison: SummaryComparison;
-  // Search the summary comparisons 
-  summaries.forEach((summ) => {
-    let selFiles = summ.getComparedFiles().getSelectedFiles().values();
-    if(file1 === selFiles.next().value && file2 == selFiles.next().value) {
-      comparison = summ;
+  // Search the summary comparisons for matching comparison, TODO: Use IDs
+  summaries.forEach((s) => {
+    let selFiles = s.getComparedFiles().getSelectedFiles().values();
+    if(file1 === selFiles.next().value && file2 === selFiles.next().value) {
+      comparison = s;
     }
   });
 
-  let comparisons: Object[]
+  let comparison1 = comparison.getComparisons()[0];
+  let comparison2 = comparison.getComparisons()[1];
+  // TODO: Check for errors?
+
+  let response = {
+    "file1": file1.getPlainCode(),
+    "file2": file2.getPlainCode(),
+    "content": { 
+      "plagiarism": comparison1.getPlagiarismSeverity(),
+      "compare": comparison1.getLines().map((line) => {
+        let out = []
+        out.push(line[0], line[1], line[2], "?%");
+        return out;
+      }),
+    },
+    "textDiff": {
+      "plagiarism": comparison2.getPlagiarismSeverity(),
+      "compare": comparison2.getLines().map((line) => {
+        let out = []
+        out.push(line[0], line[1]);
+        return out;
+      }),
+    }
+  };
+
+  /*
+  let comparisons: Object[] = [];
   let out = { "percentage": comparison.getPlagiarismPercentage(), "comparisons": comparisons};
   comparison.getComparisons().forEach((comp) => {
-    out.comparisons.push({ "line": 1, "severity": comp.PlagiarismSeverity() }) // TODO: Change response
+    console.log(comp);
+    
+    out.comparisons.push({ "line": 1, "severity": comp.getPlagiarismSeverity(),  }) // TODO: Change response
   })
-  res.status(200).send(out);
+  */
+
+  res.status(200).send(response);
+});
+
+app.put('/comparison', (req, res) => {
+  let file1 = req.body.file1;
+  let file2 = req.body.file2;
+
+  application.selectFiles(file1, file2);
+  application.compare();
+
+  res.status(200).send({})
 });
 
 /* 

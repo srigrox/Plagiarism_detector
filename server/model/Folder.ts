@@ -32,6 +32,11 @@ export default class Folder implements IFile {
         throw new Error("Cannot get code from a folder");
     }
 
+    // Gets plain code
+    getPlainCode(): Array<string> {
+        return undefined;
+    }
+
     // Returns file ID
     getID(): string {
         return undefined;
