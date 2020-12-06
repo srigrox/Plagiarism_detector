@@ -287,7 +287,7 @@ app.get('/comparison', (req, res) => {
       "plagiarism": comparison1.getPlagiarismSeverity(),
       "compare": comparison1.getLines().map((line) => {
         let out = []
-        out.push(line[0], line[1], line[2], "?%");
+        out.push(line[0][0], line[0][1], line[1][0], line[1][1], line[2], "?%");
         return out;
       }),
     },
@@ -295,7 +295,7 @@ app.get('/comparison', (req, res) => {
       "plagiarism": comparison2.getPlagiarismSeverity(),
       "compare": comparison2.getLines().map((line) => {
         let out = []
-        out.push(line[0], line[1]);
+        out.push(line[0][0], line[0][1], line[1][0], line[1][1]);
         return out;
       }),
     }
