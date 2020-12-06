@@ -146,12 +146,14 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     renderComparison(file: number){
-        const compare = plagiarism2.compare;
-        let out1 = samplecode1.map(element => {
-            return { "code": element, "detect": false, "type": "", "percent": ''};
+        console.log("render comaprison", this.state)
+        const { file1code, file2code, comparison } = this.state;
+        const compare = comparison.compare;
+        let out1 = file1code.map((file: any) => {
+            return { "code": file, "detect": false, "type": "", "percent": ''};
         });
-        let out2 = samplecode1.map(element => {
-            return { "code": element, "detect": false, "type": "", "percent": ''};
+        let out2 = file2code.map((file: any) => {
+            return { "code": file, "detect": false, "type": "", "percent": ''};
         });
         for (let i = 0; i < samplecode1.length; i++) {
             for (let j = 0; j < compare.length; j++) {
@@ -173,7 +175,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
 
         let out = file === 0 ? out1 : out2;
         return <div>
-        {out.map((line, index) => {
+        {out.map((line: any, index: number = 0) => {
             let tipText;
             if (line.detect) {
                 tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
