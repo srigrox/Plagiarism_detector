@@ -208,6 +208,20 @@ const sampleCode3 = [
   'create()',
 ]
 
+const sampleCode4 = [
+"def avg(marks):",
+"  assert len(marks) != 0",
+"  return sum(marks)/len(marks)",
+
+"mark1 = []",
+'print("Average of mark1:",avg(mark1))',
+]
+
+const sampleCode5 = [
+'class MyClass:',
+'  x = 5',
+]
+
 const code = new Code("code", sampleCode.join('\n'));
 application.upload(code)
 

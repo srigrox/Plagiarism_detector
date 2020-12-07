@@ -10,7 +10,7 @@ export function compareAlgorithm(selectedFiles: SelectedFiles) {
     let file1 : Code = iterator.next().value
     let file2 : Code = iterator.next().value
 
-    console.log(compare(file1, file2)["textual diff"]["Line numbers"], "result")
+    // console.log(compare(file1, file2), "result")
 
     return compare(file1, file2)
 }
@@ -47,9 +47,13 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
                             if(blocks1[i].statements[z].type === blocks2[y].statements[q].type) {
                                 let a = blocks1[i].statements[z]
                                 let b = blocks2[y].statements[q] 
+
+                                if(a.type == "class") {
+                                    console.log(a, "class is")
+                                }
                                 
-                                let a_loc = [a.location.first_line, a.location.last_line]
-                                let b_loc = [b.location.first_line, b.location.last_line]
+                                let a_loc = [a.location.first_line - 1, a.location.last_line - 1]
+                                let b_loc = [b.location.first_line - 1, b.location.last_line - 1]
     
                                 if(checkSyntax(a, b)) {
                                     u = u + 1
@@ -104,7 +108,7 @@ function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers
             if( x[u].trim() == y[w].trim() ) {
                 if(checkLineNumberIsThere(u, similar)) {}
                 else {
-                    similar.push([u - 1, u - 1, w - 1, w - 1])
+                    similar.push([u, u, w, w])
                 }
             }
         }
@@ -223,8 +227,6 @@ function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
                     for(let n = 0; n < sn2.code.length; n++) {
                         let w = sn1.code[q]
                         let e = sn2.code[n]
-                        if(w.type == e.type) {
-                        }
 
                         if(checkSyntax(w, e)) {
                             if(result.includes(w)) {
@@ -334,6 +336,43 @@ function checkReturn(sn1: SyntaxNode, sn2:SyntaxNode) {
     }
 }
 
+function checkAssert(sn1: SyntaxNode, sn2:SyntaxNode) {
+    if(sn1.type == "assert" && sn2.type == "assert") {
+        if(sn1.cond.type == sn2.cond.type) {
+            let a = sn1.cond
+            let b = sn2.cond
+            if(checkSyntax(a,b)) {
+                return true
+            }
+        }
+    }
+}
+
+function checkClass(sn1: SyntaxNode, sn2:SyntaxNode) {
+    if(sn1.type == "class" && sn2.type == "class") {
+        let u = 0
+        for(let x = 0; x < sn1.code.length; x++) {
+            for(let y = 0; y < sn2.code.length; y++) {
+                let w = sn1.code[x]
+                let e = sn2.code[y]
+                if(checkSyntax(w, e)) {
+                    u = u + 1
+                }
+            }
+        }
+        if(sn2.code.length > sn1.code.length) {
+            if(u > 0.4 * sn1.code.length) {
+                return true
+            }
+        }
+        else {
+            if(u > 0.4 * sn2.code.length) {
+                return true
+            }
+        }
+    }
+}
+
 
 function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
@@ -407,6 +446,18 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
     else if(a.type == "return" && b.type == "return") {
         if(checkReturn(a, b)) {
             return true;
+        }
+    }
+
+    else if(a.type == "assert" && b.type == "assert") {
+        if(checkAssert(a, b)) {
+            return true;
+        }
+    }
+
+    else if(a.type == "class" && b.type == "class") {
+        if(checkClass(a, b)) {
+            return true
         }
     }
 }
