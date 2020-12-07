@@ -68,16 +68,13 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
 
     onConfirm(file1: any, file2: any) {
         if (file1 != null && file2 != null) {
-            console.log("okau")
             this.setState({
                 select1: file1.label[0],
                 select2: file2.label[0],
             })
-            console.log(file1.value, file2.value)
             DataService.postComparison(file1.value, file2.value)
                 .then(() => DataService.getComparisons())
                 .then((response) => {
-                    console.log("i got here!!!", response)
                     this.setState({
                         file1code: response.data.file1,
                         file2code: response.data.file2,
@@ -117,7 +114,6 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
     }
 
     renderTextDiff(file: number) {
-        console.log("what about here ", this.state)
         const { file1code, file2code, textDiff } = this.state;
         if (textDiff != null) {
             const compare = textDiff.compare;

@@ -21,11 +21,12 @@ export class DataService {
     });
   }
 
-  // post the 2 files selected by user
+  // Post the two files selected by user
   public static postComparison(file1: string, file2: string) {
     const formData = new FormData();
     formData.append("file1", file1);
     formData.append("file2", file2);
+    console.log(file1, file2);
     return axios.post('http://localhost:3001/comparison', formData)
       .catch((error: Error): any => {
         console.error('Something went wrong: ', error.message);
@@ -33,7 +34,7 @@ export class DataService {
       });
   }
 
-  // delete files from the list of files
+  // Delete files from the list of files
   public static removeFile(fileName: string) {
     return axios.delete('http://localhost:3001/file?file=' + fileName)
       .catch((error: Error): any => {
