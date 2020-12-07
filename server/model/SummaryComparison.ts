@@ -20,9 +20,7 @@ export default class SummaryComparison {
         this.id = (parseInt(iterator.next().value.getID()) 
                   + parseInt(iterator.next().value.getID())).toString();
         this.date = new Date();
-        console.log("sc.ts, 23")
         this.generateComparisons();
-        console.log("sc.ts, 25")
     }
 
     getComparedFiles(): SelectedFiles {
@@ -31,10 +29,6 @@ export default class SummaryComparison {
 
     getComparisons(): Array<IComparison> {
         return this.comparisons;
-    }
-
-    getPlagiarismPercentage(): number {
-        return this.plagiarismPercentage;
     }
 
     getID(): string {
@@ -48,11 +42,8 @@ export default class SummaryComparison {
 
     // Calls the algorithm and formats into backend
     generateComparisons() : void {
-        console.log("gc, 51")
         this.comparisons = [];
         const algoOutput = compareAlgorithm(this.comparedFiles);
-
-        console.log("gc, 55")
 
         let content = this.factory.makeComparison("content");
         content.setPlagiarismSeverity(algoOutput.content_check.Plagarised);
@@ -64,7 +55,7 @@ export default class SummaryComparison {
         })
 
         let td = this.factory.makeComparison("textDiff");
-        td.setPlagiarismSeverity(0);
+        td.setPlagiarismSeverity(algoOutput["textual diff"].Plagarised);
         td.setLines(lines);
         this.comparisons.push(td);
     }
