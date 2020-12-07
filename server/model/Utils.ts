@@ -10,6 +10,8 @@ export function compareAlgorithm(selectedFiles: SelectedFiles) {
     let file1 : Code = iterator.next().value
     let file2 : Code = iterator.next().value
 
+    // console.log(compare(file1, file2), "result")
+
     return compare(file1, file2)
 }
 
@@ -59,7 +61,7 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
                     }
                 }
                 if(blocks1[i].statements.length > blocks2[y].statements.length) {
-                    if(u > 0.6 * blocks1[i].statements.length) {
+                    if(u > 0) {
                         if(checkBlockIsThere(blocks2[y], simBlocks)) {
                         }
                         else {
@@ -69,7 +71,7 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
                     }
                 }
                 else {
-                    if(u > 0.6 * blocks2[y].statements.length) {
+                    if(u > 0) {
                         if(checkBlockIsThere(blocks2[y], simBlocks)) {
                         }
                         else {
@@ -100,9 +102,9 @@ function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers
     for(let u = 0; u < x.length; u++) {
         for(let w = 0; w < y.length; w ++) {
             if( x[u].trim() == y[w].trim() ) {
-                if(checkLineNumberIsThere(u+1, similar)) {}
+                if(checkLineNumberIsThere(u, similar)) {}
                 else {
-                    similar.push([u + 1, u + 1, w + 1, w + 1])
+                    similar.push([u, u, w, w])
                 }
             }
         }
@@ -175,7 +177,7 @@ function checkAssign(sn1 : SyntaxNode, sn2: SyntaxNode) {
                 }
             }
         }
-        if (x >  0.6 * sn1.targets.length) {
+        if (x >  0.4 * sn1.targets.length) {
             return true
         }
     }
@@ -202,7 +204,7 @@ function checkElse(sn1 : SyntaxNode, sn2: SyntaxNode) {
                     }
                 }
 
-                if(x > 0.6 * sn1.code.length) {
+                if(x > 0.4 * sn1.code.length) {
                     return true
                 }
             }
@@ -216,16 +218,26 @@ function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
         if(sn1.code && sn1.code.length > 0 && sn2.code && sn2.code.length > 0) {
             if(sn1.code.length == sn2.code.length) {
                 let u = 0
+                let result : Array<SyntaxNode> = []
                 for(let q = 0; q < sn1.code.length; q++) {
-                    let w = sn1.code[q]
-                    let e = sn2.code[q]
+                    for(let n = 0; n < sn2.code.length; n++) {
+                        let w = sn1.code[q]
+                        let e = sn2.code[n]
+                        if(w.type == e.type) {
+                        }
 
-                    if(checkSyntax(w, e)) {
-                        u = u + 1
+                        if(checkSyntax(w, e)) {
+                            if(result.includes(w)) {
+                            }
+                            else {
+                                u = u + 1
+                                result.push(w)
+                            }
+                        }
                     }
                 }
 
-                if (u > 0.6 * sn1.code.length) {
+                if (u > 0.4 * sn1.code.length) {
                     return true
                 }
             }
@@ -292,7 +304,7 @@ function checkFor(sn1: SyntaxNode, sn2:SyntaxNode) {
                     x = sn2.code.length
                 }
 
-                if(u > 0.7 * x) {
+                if(u > 0.4 * x) {
                     return true
                 }
             } 
@@ -314,7 +326,7 @@ function checkReturn(sn1: SyntaxNode, sn2:SyntaxNode) {
                 }
             }
 
-            if(u > 0.7 * sn1.values.length) {
+            if(u > 0.4 * sn1.values.length) {
                 return true
             }
 
