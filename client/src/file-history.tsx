@@ -40,11 +40,6 @@ const dataFake = [
 export default class FileHistoryComponent extends React.Component<{}, any> {
     columns = [
         {
-            title: 'History ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
           title: 'Date',
           dataIndex: 'date',
           key: 'date',
@@ -60,7 +55,7 @@ export default class FileHistoryComponent extends React.Component<{}, any> {
           key: 'file2',
         },
         {
-            title: 'Similarity',
+            title: 'Similarity (Comparison/Textual Diff)',
             dataIndex: 'similarity',
             key: 'similarity',
         },

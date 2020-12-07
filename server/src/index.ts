@@ -417,7 +417,7 @@ app.delete('/history', (req, res) => {
   
   try {
     application.getCurrentUser().removeComparison(id);
-    res.status(200).send({ "files": getHistoryAndSend() });    
+    res.status(200).send({ "history": getHistoryAndSend() });    
 
   } catch (error) {
     res.status(500).send("File not found");
@@ -435,7 +435,7 @@ function getHistoryAndSend(): Array<Object> {
       "file2": iterator.next().value.getName(),
       "id": comparison.getID(),
       "date": comparison.getDate(),
-      "similarity": "?%" })
+      "similarity": `${Math.round(comparison.getComparisons()[0].getPlagiarismSeverity())}%/${Math.round(comparison.getComparisons()[1].getPlagiarismSeverity())}%` })
   });
 
   return output;
