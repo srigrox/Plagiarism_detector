@@ -39,9 +39,8 @@ const sampleCode = [
 const sampleCode1 = [
   'def arrayMultiply(array, c):',
   '    return [element*c for element in array]',
-  'def arraySum(a, b):',
-  '    x = a + b',
-  '    return x'
+  "def add(x, y):",
+  "    return x + y"
   // 'def intermediate(a, b, ratio):',
 ]
 
@@ -92,32 +91,122 @@ const sampleCode2 = [
   '        print("Invalid Input")'
 ]
 
-// const scode = `def arrayMultiply(array, c):
-// return [element*c for element in array]
-
-// def arraySum(a, b):
-// return map(sum, zip(a,b))
-
-// def intermediate(a, b, ratio):
-// aComponent = arrayMultiply(a, ratio)
-// bComponent = arrayMultiply(b, 1-ratio)
-// return arraySum(aComponent, bComponent)
-
-// def gradient(a, b, steps):
-// steps = [n/float(steps) for n in range(steps)]
-// for step in steps:
-//     print intermediate(a, b, step)
-
-// #print arrayMultiply((1,2,3), 0.3)
-// #print arraySum((1,2,3), (0.5, 0.5, 0.5))
-// #print intermediate((1,2,3), (3,2,1), 0.5)
-// #print gradient(None, None, 5)
-
-
-// pureBlue = (8, 123, 157)
-// pureYellowGreen = (0,84,166)
-
-// gradient(pureBlue, pureYellowGreen, 6)`
+const sampleCode3 = [
+  'import pandas as pd',
+  'import pygsheets',
+  'def create() :',
+  '    client = pygsheets.authorize(service_file = "Downloads/client_secret.json")',
+  "    sh = client.open('Tracking')",
+  '    entry = sh.sheet1',
+  '    database = sh.worksheet_by_title("DATABASE")',    
+  '    Name = entry.get_col(3)',
+  '    Name = Name[8:59]',
+  '    Name1 = database.get_col(7)',
+  '    a = 0',
+  '    for n in Name1 :', 
+  '        if(len(n) > 0) :',
+  '            a = a + 1',
+  '    database.update_col(7, Name, row_offset = a)',
+      
+  '    Understanding = entry.get_col(4)',
+  '    Understanding = Understanding[8:59]',
+  '    Understanding1 = database.get_col(8)',
+  '    b = 0',
+  '    for n in Understanding1 :',
+  '        if(len(n) > 0) :',
+  '            b = b + 1',
+  '    database.update_col(8, Understanding, row_offset = b)',
+  '    print(Understanding)',
+      
+  '    Accuracy = entry.get_col(5)',
+  '    Accuracy = Accuracy[8:59]',
+  '    Accuracy1 = database.get_col(9)',
+  '    c = 0',
+  '    for n in Accuracy1 :',
+  '        if(len(n) > 0) :',
+  '            c = c + 1',
+  '    database.update_col(9, Accuracy, row_offset = c)',
+  '    print(Accuracy)',
+      
+  '    Enjoyability = entry.get_col(6)',
+  '    Enjoyability = Enjoyability[8:59]',
+  '    Enjoyability1 = database.get_col(10)',
+  '    d = 0',
+  '    for n in Name1 :',
+  '        if(len(n) > 0) :',
+  "           d = d + 1",
+  '    database.update_col(10, Enjoyability, row_offset = d)',
+  '    print(Enjoyability)',
+      
+  '    x = 0',
+  '    for n in Name :',
+  '        if(len(n) > 0) :',
+  '            x = x + 1',
+  '    print(x)',
+      
+  '    listOfStrings1 = [entry.get_value((4,3))] * x',
+  '    listOfStrings2 = [entry.get_value((4,5))] * x',
+  '    listOfStrings3 = [entry.get_value((4,7))] * x',
+  '    listOfStrings4 = [entry.get_value((4,9))] * x',
+  '    listOfStrings5 = [entry.get_value((6,5))] * x',
+  '    listOfStrings6 = [entry.get_value((6,7))] * x',
+      
+  '    Date1 = database.get_col(2)',
+  '    e = 0',
+  '    for n in Date1 :',
+  '        if(len(n) > 0) :',
+  '            e = e + 1',
+  '    database.update_col(2, listOfStrings1, row_offset = e)',
+      
+  '    Activity1 = database.get_col(4)',
+  '    f = 0',
+  '    for n in Activity1 :',
+  '        if(len(n) > 0) :',
+  '            f = f + 1',
+  '    database.update_col(4, listOfStrings2, row_offset = f)',
+      
+  '    Domain1 = database.get_col(5)',
+  '    g = 0',
+  '    for n in Domain1 :',
+  '        if(len(n) > 0) :',
+  '            g = g + 1',
+  '    database.update_col(5, listOfStrings3, row_offset = g)',
+     
+  '    Concept1 = database.get_col(6)',
+  '    h = 0',
+  '    for n in Concept1 :',
+  '        if(len(n) > 0) :',
+  '            h = h + 1',
+  "    database.update_col(6, listOfStrings4, row_offset = h)",
+      
+  '    Acc1 = database.get_col(1)',
+  '    i = 0',
+  '    for n in Acc1 :',
+  '        if(len(n) > 0) :',
+  '            i = i + 1',
+  '    database.update_col(1, listOfStrings5, row_offset = i)',
+     
+  '    Concept_A = database.get_col(3)',
+  '    l = 0',
+  '    for n in Concept_A :',
+  '        if(len(n) > 0) :',
+  '            l = l + 1',
+  '    database.update_col(3, listOfStrings6, row_offset = l)',
+      
+  "    lis = ['' for i in range(50)]",
+  '    entry.update_col(3, lis, row_offset = 8)',
+  '    entry.update_col(4, lis, row_offset = 8)',
+  '    entry.update_col(5, lis, row_offset = 8)',
+  '    entry.update_col(6, lis, row_offset = 8)',
+      
+  "    entry.update_value((4,5), '')",
+  "    entry.update_value((4,7), '')",
+  "    entry.update_value((4,9), '')",
+  "    entry.update_value((6,5), '')",
+  "    entry.update_value((6,7), '')",
+  
+  'create()',
+]
 
 const code = new Code("code", sampleCode.join('\n'));
 application.upload(code)
@@ -129,8 +218,8 @@ const todos = [
 let file1, file2;
 
 // file1 = new Code("code.py", "x = 1");
-file1 = new Code("code2.py", sampleCode2.join('\n'));
-file2 = new Code("index.py", sampleCode2.join('\n'));
+file1 = new Code("code2.py", sampleCode3.join('\n'));
+file2 = new Code("index.py", sampleCode3.join('\n'));
 
 application.upload(file1);
 application.upload(file2);
