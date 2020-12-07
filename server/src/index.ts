@@ -332,7 +332,6 @@ app.get('/fileselection', (req, res) => {
 
 // Route for selecting files
 app.post('/fileselection', (req, res) => {
-  const files = application.getCurrentUser().getFiles();
   const file1 = req.body.file1;
   const file2 = req.body.file2;
   if (file1 === file2) {
@@ -353,17 +352,20 @@ app.get('/comparison', (req, res) => {
   let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
   let file1: Code = files.next().value;
   let file2: Code = files.next().value;
-
+  
   let summaries = application.getCurrentUser().getComparisons();
 
   let comparison: SummaryComparison;
   // Search the summary comparisons for matching comparison
   summaries.forEach((s) => {
     let selFiles = s.getComparedFiles().getSelectedFiles().values();
-    if(file1.getID() === selFiles.next().value.getID() && file2.getID() === selFiles.next().value.getID()) {
+    let id1 = selFiles.next().value.getID()
+    let id2 = selFiles.next().value.getID()
+    if(file1.getID() === id1 && file2.getID() === id2) {
       comparison = s;
     }
   });
+
 
   let comparison1 = comparison.getComparisons()[0];
   let comparison2 = comparison.getComparisons()[1];
