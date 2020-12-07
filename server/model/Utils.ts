@@ -10,7 +10,7 @@ export function compareAlgorithm(selectedFiles: SelectedFiles) {
     let file1 : Code = iterator.next().value
     let file2 : Code = iterator.next().value
 
-    // console.log(compare(file1, file2), "result")
+    console.log(compare(file1, file2)["textual diff"]["Line numbers"], "result")
 
     return compare(file1, file2)
 }
@@ -104,7 +104,7 @@ function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers
             if( x[u].trim() == y[w].trim() ) {
                 if(checkLineNumberIsThere(u, similar)) {}
                 else {
-                    similar.push([u, u, w, w])
+                    similar.push([u - 1, u - 1, w - 1, w - 1])
                 }
             }
         }
