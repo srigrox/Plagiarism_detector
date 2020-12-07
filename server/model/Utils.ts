@@ -40,14 +40,14 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
 
     for (let i = 0; i < blocks1.length; i++) {
         for (let y = 0; y < blocks2.length; y++) {
-            if(blocks1[i].statements && blocks1[i].statements) {
+            if(blocks1[i].statements && blocks2[y].statements) {
                 let u = 0
                 for(let z = 0; z < blocks1[i].statements.length; z++) {
                     for(let q = 0;  q < blocks2[y].statements.length; q++) {
                         if(blocks1[i].statements[z] && blocks2[y].statements[q]) {
-                            if(blocks1[i].statements[z].type === blocks2[y].statements[z].type) {
+                            if(blocks1[i].statements[z].type === blocks2[y].statements[q].type) {
                                 let a = blocks1[i].statements[z]
-                                let b = blocks2[y].statements[z] 
+                                let b = blocks2[y].statements[q] 
     
                                 let a_loc = [a.location.first_line, a.location.last_line]
                                 let b_loc = [b.location.first_line, b.location.last_line]
