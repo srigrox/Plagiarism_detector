@@ -10,7 +10,7 @@ export function compareAlgorithm(selectedFiles: SelectedFiles) {
     let file1 : Code = iterator.next().value
     let file2 : Code = iterator.next().value
 
-    console.log(compare(file1, file2)["textual diff"], "co")
+    console.log(compare(file1, file2), "co")
 
     return compare(file1, file2)
 }
@@ -20,6 +20,7 @@ function compare(f1:Code, f2:Code) {
 }
 
 function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers": (string | number[])[][]} {
+
     let c1 = f1.getCode() 
     let c2 = f2.getCode() 
 
@@ -36,35 +37,30 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
 
     let line_numbers = []
 
-    let typeList = ["assign"]
-
 
     for (let i = 0; i < blocks1.length; i++) {
         for (let y = 0; y < blocks2.length; y++) {
             if(blocks1[i].statements && blocks1[i].statements) {
                 let u = 0
                 for(let z = 0; z < blocks1[i].statements.length; z++) {
-
-                    if(blocks1[i].statements[z] && blocks2[y].statements[z]) {
-                        if(blocks1[i].statements[z].type === blocks2[y].statements[z].type) {
-                            let a = blocks1[i].statements[z]
-                            let b = blocks2[y].statements[z]
-                            // console.log(a.type, "a is")
-                            // console.log(b.type, "b is")
-
-
-                            let a_loc = [a.location.first_line, a.location.last_line]
-                            let b_loc = [b.location.first_line, b.location.last_line]
-
-                            if(checkSyntax(a, b)) {
-                                u = u + 1
-                                line_numbers.push([a_loc, b_loc, a.type])
-                            }
+                    for(let q = 0;  q < blocks2[y].statements.length; q++) {
+                        if(blocks1[i].statements[z] && blocks2[y].statements[q]) {
+                            if(blocks1[i].statements[z].type === blocks2[y].statements[z].type) {
+                                let a = blocks1[i].statements[z]
+                                let b = blocks2[y].statements[z] 
     
+                                let a_loc = [a.location.first_line, a.location.last_line]
+                                let b_loc = [b.location.first_line, b.location.last_line]
+    
+                                if(checkSyntax(a, b)) {
+                                    u = u + 1
+                                    line_numbers.push([a_loc, b_loc, a.type])
+                                }
+        
+                            }
                         }
                     }
                 }
-
                 if(blocks1[i].statements.length > blocks2[y].statements.length) {
                     if(u > 0.6 * blocks1[i].statements.length) {
                         if(checkBlockIsThere(blocks2[y], simBlocks)) {
@@ -88,12 +84,6 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
             }
         }
     }
-
-    // console.log(blocks1, "length")
-    // // console.log(simBlocks, "length 2")
-    // console.log(checkCall(blocks1[7].statements[0], blocks2[7].statements[0]), "check call")
-    // console.log(arraysEqual([ 'call', 'literal', 'literal', 'name', 'name' ], [ 'call', 'literal', 'literal', 'name', 'name' ]), "check equal")
-
 
     if(blocks1.length > blocks2.length) {
         return {"Plagarised" : ((simBlocks.length/blocks1.length) * 100), "Line numbers": line_numbers}
@@ -236,17 +226,6 @@ function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
                     if(checkSyntax(w, e)) {
                         u = u + 1
                     }
-
-                    // if(w.type == "return" && e.type == "return") {
-                    //     if(w.values.length == e.values.length) {
-                    //         u = u + 1
-                    //     }
-                    // }
-                    // else if(w.type == "assign" && e.type == "assign") {
-                    //     if(checkAssign(w, e)) {
-                    //         u = u + 1
-                    //     }
-                    // }
                 }
 
                 if (u > 0.6 * sn1.code.length) {
@@ -259,7 +238,6 @@ function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
 
 function checkImport(sn1: SyntaxNode, sn2:SyntaxNode) {
     if(sn1.type == "import" && sn2.type == "import") {
-        // console.log(sn1, "import is")
         let x = 0
         if(sn1.names.length > sn2.names.length) {
             x = sn1.names.length
@@ -325,6 +303,28 @@ function checkFor(sn1: SyntaxNode, sn2:SyntaxNode) {
     }
 }
 
+function checkReturn(sn1: SyntaxNode, sn2:SyntaxNode) {
+    if(sn1.type == "return" && sn2.type == "return") {
+        if(sn1.values.length == sn2.values.length) {
+            let u = 0
+            for(let i = 0; i < sn1.values.length; i ++) {
+                for(let y = 0; y < sn2.values.length; y ++) {
+                    let w = sn1.values[i]
+                    let e = sn2.values[y]
+                    if(checkSyntax(w, e)) {
+                        u = u + 1
+                    }
+                }
+            }
+
+            if(u > 0.7 * sn1.values.length) {
+                return true
+            }
+
+        }
+    }
+}
+
 
 function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
@@ -334,7 +334,7 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
         }
     }
 
-    if(a.type == "binop" && b.type == "binop") {
+    else if(a.type == "binop" && b.type == "binop") {
         if(a.left.type == b.left.type && a.right.type == b.right.type) {
             if(a.right.type == "name" && b.right.type == "name") {
                 if(a.right.id == b.right.id) {
@@ -355,48 +355,50 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
     }
 
-    if(a.type == "literal" && b.type == "literal") {
+    else if(a.type == "literal" && b.type == "literal") {
         if(a.value == b.value) {
             return true;
         }
     }
 
 
-    if(a.type == "call" && b.type == "call") {
+    else if(a.type == "call" && b.type == "call") {
         if(checkCall(a, b)) {
             return true;     
         }
 
     }
 
-    if(a.type == "def" && b.type == "def") {
+    else if(a.type == "def" && b.type == "def") {
         if(checkDef(a, b)) {
             return true;
         }
                                         
     }
 
-    if(a.type == "else" && b.type == "else") {
+    else if(a.type == "else" && b.type == "else") {
         if(checkElse(a, b)) {
             return true;
         }
 
     }
 
-    if(a.type == "import" && b.type == "import") {
+    else if(a.type == "import" && b.type == "import") {
         if(checkImport(a, b)) {
             return true;
         }
     }
 
-    if(a.type == "for" && b.type == "for") {
+    else if(a.type == "for" && b.type == "for") {
         if(checkFor(a,b)) {
             return true;
         }
     }
 
-    if(a.type == "return" && b.type == "return") {
-        console.log(a, "return is")
+    else if(a.type == "return" && b.type == "return") {
+        if(checkReturn(a, b)) {
+            return true;
+        }
     }
 }
 
