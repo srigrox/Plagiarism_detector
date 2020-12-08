@@ -21,24 +21,19 @@ export default class FileUploadComponent extends React.Component<{}, any> {
   }
 
   onFileChange = (event: any) => {
-    // Update the state 
     this.setState({ selectedFile: event.target.files });
   };
 
-  // On file upload (click the upload button) 
   onFileUpload = () => {
     const { selectedFile } = this.state
 
-    // Create an object of formData 
     const formData = new FormData();
     
-
     if (selectedFile == null) {
       message.error('Please select a file to upload');
       return;
     }
 
-    // Update the formData object 
     for(let i = 0; i < selectedFile.length; i++)
       formData.append(
         `files[${i}]`,
@@ -46,11 +41,6 @@ export default class FileUploadComponent extends React.Component<{}, any> {
         selectedFile[i].name
       );
 
-    // Details of the uploaded file 
-    console.log(this.state.selectedFile);
-
-    // Request made to the backend api 
-    // Send formData object 
     axios.post('http://localhost:3001/file', formData).then((response: any) => {
       this.setState({ uploadedFiles: response.data.files });
     });
@@ -78,7 +68,7 @@ export default class FileUploadComponent extends React.Component<{}, any> {
       dom_content.push (
         <div>
           <br />
-          <h4>Choose before Pressing the Upload button</h4>
+          <h4>Select files before uploading</h4>
         </div>
       );
     }
