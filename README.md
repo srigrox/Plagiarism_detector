@@ -19,5 +19,3 @@ Frontend is in the `client` folder and backend is in the `server` folder.
 # Running the application:
 In both `client` and `server`: 
 ```npm run start```
-
-Tasks:
