@@ -366,7 +366,6 @@ export function checkAssert(sn1: SyntaxNode, sn2:SyntaxNode) {
                 }
             }
         }
-        return true
     }
 }
 
@@ -396,7 +395,6 @@ export function checkClass(sn1: SyntaxNode, sn2:SyntaxNode) {
                 }
             }
         }
-        return true
     }
 }
 
