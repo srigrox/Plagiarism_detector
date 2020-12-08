@@ -7,7 +7,6 @@ import { compareAlgorithm } from "./Utils";
 export default class SummaryComparison {
     private comparedFiles : SelectedFiles;
     private comparisons : Array<IComparison>;
-    private plagiarismPercentage : number;
     private factory: ComparisonFactory;
     private id: string;
     private date: Date;
@@ -41,7 +40,7 @@ export default class SummaryComparison {
     }
 
     // Calls the algorithm and formats into backend
-    generateComparisons() : void {
+    private generateComparisons() : void {
         this.comparisons = [];
         const algoOutput = compareAlgorithm(this.comparedFiles);
 

@@ -10,7 +10,7 @@
 
   const mocha = new Mocha(Object.assign(mochaConfig, { "_require": [tsnodeRegister] }));
 
-  await helper.generateFileList(path.resolve(__dirname, '..', 'src'))
+  await helper.generateFileList(path.resolve(__dirname, '..', 'tests'))
     .then((fileList) => {
       fileList.forEach((file) => {
         mocha.addFile(file);

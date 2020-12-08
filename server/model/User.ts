@@ -8,7 +8,7 @@ export default class User {
     private password: string;
     private files: Array<Code>;
     private comparisons: Array<SummaryComparison>;
-    selectedFiles?: SelectedFiles;
+    private selectedFiles?: SelectedFiles;
 
     constructor(username: string, password: string, ) {
         this.username = username;
@@ -27,6 +27,10 @@ export default class User {
 
     getComparisons(): Array<SummaryComparison> {
         return this.comparisons;
+    }
+
+    getSelectedFiles(): SelectedFiles {
+        return this.selectedFiles;
     }
 
     removeComparison(id: string): void {
@@ -57,6 +61,10 @@ export default class User {
         let file1: Code
         let file2: Code
 
+        if(f1 === f2) {
+            throw new Error("File are the same");
+        }
+
         this.files.forEach((file) => {
             const id = file.getID()
             if(id === f1) {
@@ -77,6 +85,7 @@ export default class User {
         let iterator = this.selectedFiles.getSelectedFiles().values();
         let file1: string = iterator.next().value.getID();
         let file2: string = iterator.next().value.getID();
+
         let id = (parseInt(file1) + parseInt(file2)).toString();
 
         let comparison: SummaryComparison;

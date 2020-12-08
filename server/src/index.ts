@@ -25,7 +25,7 @@ app.use(fileUpload());
 
 const application = Application.instance();
 let user = new User('username', 'password');
-application.register(user)
+application.register(user);
 
 const sampleCode = [
   'x, y = 0, 0',
@@ -223,11 +223,7 @@ const sampleCode5 = [
 ]
 
 const code = new Code("code", sampleCode.join('\n'));
-application.upload(code)
-
-const todos = [
-  { title: application.getCurrentUser().getFiles()[0].getCode().type }
-];
+//application.upload(code)
 
 let file1, file2;
 
@@ -235,36 +231,12 @@ let file1, file2;
 file1 = new Code("code2.py", sampleCode3.join('\n'));
 file2 = new Code("index.py", sampleCode3.join('\n'));
 
-application.upload(file1);
-application.upload(file2);
+//application.upload(file1);
+//application.upload(file2);
 
-application.selectFiles(file1.getID(), file2.getID());
+//application.selectFiles(file1.getID(), file2.getID());
 
-application.compare();
-
-/*
-app.get('/todo', (req, res) => {
-  res.status(200).send(todos);
-});
-
-app.post('/todo', (req, res) => {
-  console.log(req.body);
-  const todo = req.body.todo;
-  todos.push(todo);
-  res.status(200).send(todos);
-});
-
-app.delete('/todo', (req, res) => {
-  const todo = req.query.todo || '';
-  const index = todos.findIndex((existingTodo) =>  existingTodo.title === todo); 
-  if(index > -1) {
-    todos.splice(index, 1);
-    res.status(200).send(todos);
-  } else {
-    res.status(500).send('Todo not found');
-  }
-});
-*/
+//application.compare();
 
 // Register Route
 app.post('/register', (req, res) => {
@@ -338,7 +310,7 @@ function getFilesAndSend(): Array<Object> {
 
 // Route for getting selected files
 app.get('/fileselection', (req, res) => {
-  let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
+  let files = application.getCurrentUser().getSelectedFiles().getSelectedFiles().values();
   
   let out = { "file1": files.next().value, "file2": files.next().value }
   res.status(200).send(out);
@@ -363,7 +335,7 @@ app.post('/fileselection', (req, res) => {
 
 // Route for getting the comparison related to the current selection
 app.get('/comparison', (req, res) => {
-  let files = application.getCurrentUser().selectedFiles.getSelectedFiles().values();
+  let files = application.getCurrentUser().getSelectedFiles().getSelectedFiles().values();
   let file1: Code = files.next().value;
   let file2: Code = files.next().value;
   
@@ -475,4 +447,4 @@ app.listen(port, () => {
   console.log(`server running on localhost:${port}/`);
 });
 
-
+module.exports = app; // for testing API

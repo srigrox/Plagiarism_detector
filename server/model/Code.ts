@@ -33,11 +33,6 @@ export default class Code {
         return this.name;
     }
 
-    // Returns list of subfiles of this file, which is none.
-    getSubFiles(): Array<Code> {
-        return [];
-    }
-
     // Returns this code in the form of an 1-element list.
     getCode(): Module {
         return this.code;

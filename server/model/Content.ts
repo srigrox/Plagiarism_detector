@@ -1,10 +1,6 @@
 import IComparison from "./IComparison";
 
 export default class Content implements IComparison {
-    private comparedFiles: any;
-    private starred: boolean;
-    private ignored: boolean;
-    summary: string;
     private plagiarismSeverity: number;
     private linesAffected: Array<Array<Array<number> | string>>;
 
@@ -13,7 +9,11 @@ export default class Content implements IComparison {
     }
 
     setPlagiarismSeverity(ps: number): void {
-        this.plagiarismSeverity = ps;
+        if (ps > 100 || ps < 0) {
+            throw new Error("Invalid plagiarism severity");
+        } else {
+            this.plagiarismSeverity = ps;
+        }
     }
 
     getLines(): Array<Array<Array<number> | string>> {
@@ -23,13 +23,4 @@ export default class Content implements IComparison {
     setLines(lines: Array<Array<Array<number> | string>>): void {
         this.linesAffected = lines;
     }
-
-    flipStar(): void {
-        throw new Error("Method not implemented.");
-    }
-    
-    flipIgnored(): void {
-        throw new Error("Method not implemented.");
-    }
-
 }

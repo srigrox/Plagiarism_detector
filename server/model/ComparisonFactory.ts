@@ -10,7 +10,7 @@ export default class ComparisonFactory {
         } else if (comp === "textDiff") {
             return new TextualDiff();
         } else {
-            return undefined;
+            return null;
         }
     }
 }
