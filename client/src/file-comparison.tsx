@@ -2,48 +2,9 @@ import { FileSearchOutlined } from "@ant-design/icons";
 import { Row, Col, Button, Tooltip, Select, message } from "antd";
 import Content from "antd/lib/layout/layout";
 import React from "react";
-import { PlagiarismAppState } from "./plagiarism.interface";
-import { FormInstance } from 'antd/lib/form';
 import { DataService } from "./data-service";
 import Text from "antd/lib/typography/Text";
-import { createSemanticDiagnosticsBuilderProgram } from "typescript";
-
 const { Option } = Select;
-
-const plagerism1 = [['style={{padding: 100}}><Button size="large" onClick={this.showLogin}', true, "100%", "Textual Diff"],
-['okButtonProps={{form:', true, "100%", "Textual Diff"],
-['okButtonProps={{form:', true, "100%", "Textual Diff"],
-['this is diff', false, "100%", "Textual Diff"],
-['WOW', false, "100%", "Textual Diff"],
-['okButtonProps={{form:', true, "100%", "Textual Diff"],
-['this is diff', false, "100%", "Textual Diff"],
-['WOW', false, "100%", "Textual Diff"],
-['okButtonProps={{form:', true, "100%", "Textual Diff"],
-['this is diff', false, "100%", "Textual Diff"],
-['WOW', false, "100%", "Textual Diff"],
-['okButtonProps={{form:', true, "100%", "Textual Diff"]];
-
-const fileSelected = false;
-
-const plagerism2 = [['this is diff', false, "100%", "Textual Diff"],
-['WOW', false, "100%", "Textual Diff"],
-['okButtonProps={{form:', true, "100%", "Textual Diff"]];
-
-const samplecode1 = ['style={{padding: 100}}><Button size="large" onClick={this.showLogin}',
-    'okButtonProps={{form:',
-    'okButtonProps={{form:',
-    'this is diff',
-    'WOW',
-    'okButtonProps={{form:',
-    'this is diff',
-    'WOW',
-    'okButtonProps={{form:',
-    'this is diff',
-    'WOW',
-    'okButtonProps={{form:'];
-
-const plagiarism1 = { plagiarism: 60, compare: [[1, 1, 3, 4], [5, 6, 1, 2]] }
-const plagiarism2 = { plagiarism: 80, compare: [[1, 2, 4, 5, "var change", "60%"], [5, 6, 2, 3, "name change", "80%"]] }
 
 export default class FileComparisonComponent extends React.Component<{}, any> {
     constructor(props: {}) {
@@ -126,7 +87,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
             for (let i = 0; i < file1code.length; i++) {
                 for (let j = 0; j < compare.length; j++) {
                         if (i >= compare[j][0] && i <= compare[j][1]) {
-                            let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
+                            let lines1 = [compare[j][2] + 1, compare[j][3] + 1]
                             out1[i].detect = true;
                             out1[i].codeLines = lines1;
                         }
@@ -135,7 +96,7 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
             for (let i = 0; i < file1code.length; i++) {
                 for (let j = 0; j < compare.length; j++) {
                         if (i >= compare[j][2] && i <= compare[j][3]) {
-                            let lines2 = [compare[j][0].toString(), compare[j][1].toString()]
+                            let lines2 = [compare[j][0] + 1, compare[j][1] + 1]
                             out2[i].detect = true;
                             out2[i].codeLines = lines2;
                         }
@@ -169,31 +130,29 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
         if (comparison != null) {
             const compare = comparison.compare;
             let out1 = file1code.map((file: any) => {
-                return { "code": file, "detect": false, "type": "", "percent": '' };
+                return { "code": file, "detect": false, "type": ""};
             });
             let out2 = file2code.map((file: any) => {
-                return { "code": file, "detect": false, "type": "", "percent": '' };
+                return { "code": file, "detect": false, "type": ""};
             });
 
             for (let i = 0; i < file1code.length; i++) {
                 for (let j = 0; j < compare.length; j++) {
                         if (i >= compare[j][0] && i <= compare[j][1]) {
-                            let lines1 = [compare[j][2].toString(), compare[j][3].toString()]
+                            let lines1 = [compare[j][2] + 1, compare[j][3] + 1]
                             out1[i].detect = true;
                             out1[i].codeLines = lines1;
                             out1[i].type = compare[j][4].toString()
-                            out1[i].percent = compare[j][5].toString()
                         }
             }
 
             for (let i = 0; i < file1code.length; i++) {
                 for (let j = 0; j < compare.length; j++) {
                         if (i >= compare[j][2] && i <= compare[j][3]) {
-                            let lines2 = [compare[j][0].toString(), compare[j][1].toString()]
+                            let lines2 = [compare[j][0] + 1, compare[j][1] + 1]
                             out2[i].detect = true;
                             out2[i].codeLines = lines2;
                             out2[i].type = compare[j][4].toString()
-                            out2[i].percent = compare[j][5].toString()
                         }
                     }
                 }
@@ -205,9 +164,11 @@ export default class FileComparisonComponent extends React.Component<{}, any> {
                 {out.map((line: any, index: number = 0) => {
                     let tipText;
                     if (line.detect) {
-                        tipText = <div className='tooltip'><p className='percent'>{line.percent}</p>
+                        tipText = <div className='tooltip'>
                             <p>Similarity</p>
                             <p>Type: {line.type}</p>
+                            <p>Lines Compared: </p>
+                            <p> {line.codeLines[0]} to {line.codeLines[1]}</p>
                         </div>
                     }
                     return <Tooltip placement="leftTop" title={tipText}>
