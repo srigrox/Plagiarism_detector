@@ -2,7 +2,7 @@ import Code from "./Code";
 import SelectedFiles from "./SelectedFiles";
 import { Block, ControlFlowGraph, SyntaxNode, walk } from "@msrvida/python-program-analysis";
 
-
+// function that does the main comparision algorithm for 2 selected files.
 export function compareAlgorithm(selectedFiles: SelectedFiles) {
 
     let iterator = selectedFiles.getSelectedFiles().values()
@@ -10,33 +10,39 @@ export function compareAlgorithm(selectedFiles: SelectedFiles) {
     let file1 : Code = iterator.next().value
     let file2 : Code = iterator.next().value
 
-    // console.log(compare(file1, file2), "result")
+    console.log("hey")
+    console.log(compare(file1, file2), "result")
 
     return compare(file1, file2)
 }
 
-function compare(f1:Code, f2:Code) {
+// function to create dictionary of textual difference in the code and content difference in the code.
+export function compare(f1:Code, f2:Code) {
     return {"content_check" : compareFiles(f1, f2), "textual diff" : textualDiff(f1, f2)}
 }
 
-function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers": (string | number[])[][]} {
+// function to create the content difference between 2 code files.
+export function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers": (string | number[])[][]} {
 
+    //get parsed code from the files
     let c1 = f1.getCode() 
     let c2 = f2.getCode() 
 
+    // create a control flow graph tree which contains blocks ordered in the order of execution
     let cfg1 = new ControlFlowGraph(c1)
-
     let cfg2 = new ControlFlowGraph(c2)
 
-
+    // initialize the blocks of the control flow graphs.
     let blocks1 = cfg1.blocks
-
     let blocks2 = cfg2.blocks
 
+    //initialize array for similar blocks.
     let simBlocks = []
 
+    //initialize array of similar line numbers.
     let line_numbers = []
 
+    //loops through the list of blocks to get similar blocks
     for (let i = 0; i < blocks1.length; i++) {
         for (let y = 0; y < blocks2.length; y++) {
             if(blocks1[i].statements && blocks2[y].statements) {
@@ -44,17 +50,14 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
                 for(let z = 0; z < blocks1[i].statements.length; z++) {
                     for(let q = 0;  q < blocks2[y].statements.length; q++) {
                         if(blocks1[i].statements[z] && blocks2[y].statements[q]) {
-                            if(blocks1[i].statements[z].type === blocks2[y].statements[q].type) {
+                            if(blocks1[i].statements[z].type == blocks2[y].statements[q].type) {
                                 let a = blocks1[i].statements[z]
                                 let b = blocks2[y].statements[q] 
-
-                                if(a.type == "class") {
-                                    console.log(a, "class is")
-                                }
                                 
                                 let a_loc = [a.location.first_line - 1, a.location.last_line - 1]
                                 let b_loc = [b.location.first_line - 1, b.location.last_line - 1]
     
+                                //checks if the two syntax nodes a and b are similar
                                 if(checkSyntax(a, b)) {
                                     u = u + 1
                                     line_numbers.push([a_loc, b_loc, a.type])
@@ -69,6 +72,7 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
                         if(checkBlockIsThere(blocks2[y], simBlocks)) {
                         }
                         else {
+                            //push if block doesnt exist in list of similar blocks
                             simBlocks.push([blocks1[i], blocks2[y]])
                         break
                         }
@@ -79,6 +83,7 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
                         if(checkBlockIsThere(blocks2[y], simBlocks)) {
                         }
                         else {
+                            //push if block doesnt exist in list of similar blocks
                             simBlocks.push([blocks1[i], blocks2[y]])
                         break
                         }
@@ -96,13 +101,17 @@ function compareFiles(f1:Code, f2:Code) : {"Plagarised": number, "Line numbers":
     }
 }
 
-function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers": number[][]}{
+//function that gets the textual difference for 2 files
+export function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers": number[][]}{
     let similar = []
 
     let z = 0
 
+    //gets the raw code
     let x = f1.getPlainCode()
     let y = f2.getPlainCode()
+
+    //loop through the list of lines to find similar lines
     for(let u = 0; u < x.length; u++) {
         for(let w = 0; w < y.length; w ++) {
             if( x[u].trim() == y[w].trim() ) {
@@ -126,7 +135,8 @@ function textualDiff(f1 : Code, f2: Code) : {"Plagarised": number, "Line numbers
     return {"Plagarised": z, "Line numbers": similar}
 }
 
-function compressSimilarity(list: Array<Array<number>>)  {
+//helper function to compress a list of similar lines
+export function compressSimilarity(list: Array<Array<number>>)  {
     for(let i = 0; i < list.length; i++) {
         let y = []
         if(list[i + 1]) {
@@ -140,14 +150,16 @@ function compressSimilarity(list: Array<Array<number>>)  {
     }
 }
 
-function sortList(list : Array<string>) {
+//helper function to sort a list
+export function sortList(list : Array<string>) {
     list.sort((a, b) =>
      a.localeCompare(b));
      return list
 };
 
 
-function checkCall(sn1 : SyntaxNode, sn2: SyntaxNode) {
+//function to check for similar call calls in 2 syntax nodes
+export function checkCall(sn1 : SyntaxNode, sn2: SyntaxNode) {
     if (sn1.type == "call" && sn2.type == "call") {
         if(sn1.func.type == "name" && sn2.func.type == "name") {
             if(sn1.func.id == sn2.func.id) {
@@ -171,7 +183,8 @@ function checkCall(sn1 : SyntaxNode, sn2: SyntaxNode) {
     }
 }
 
-function checkAssign(sn1 : SyntaxNode, sn2: SyntaxNode) {
+//function to check for similar assign calls in 2 syntax nodes
+export function checkAssign(sn1 : SyntaxNode, sn2: SyntaxNode) {
     let x = 0
     if(sn1.type == "assign" && sn2.type == "assign") {
         for(let q = 0; q < sn1.targets.length; q++) {
@@ -181,14 +194,15 @@ function checkAssign(sn1 : SyntaxNode, sn2: SyntaxNode) {
                 }
             }
         }
-        if (x >  0.4 * sn1.targets.length) {
+        if (x >  0.6 * sn1.targets.length) {
             return true
         }
     }
 
 }
 
-function checkElse(sn1 : SyntaxNode, sn2: SyntaxNode) {
+//function to check for similar else calls in 2 syntax nodes
+export function checkElse(sn1 : SyntaxNode, sn2: SyntaxNode) {
     if(sn1.type == "else" && sn2.type == "else") {
         if(sn1.code && sn1.code.length > 0 && sn2.code && sn2.code.length > 0) {
             if(sn1.code.length == sn2.code.length) {
@@ -196,15 +210,8 @@ function checkElse(sn1 : SyntaxNode, sn2: SyntaxNode) {
                 for(let q = 0; q < sn1.code.length; q++) {
                     let w = sn1.code[q]
                     let e = sn2.code[q]
-                    if(w.type == "return" && e.type == "return") {
-                        if(w.values.length == e.values.length) {
-                            x = x + 1
-                        }
-                    }
-                    else if(w.type == "assign" && e.type == "assign") {
-                        if(checkAssign(w, e)) {
-                            x = x + 1
-                        }
+                    if(checkSyntax(w, e)) {
+                        x = x + 1
                     }
                 }
 
@@ -217,7 +224,8 @@ function checkElse(sn1 : SyntaxNode, sn2: SyntaxNode) {
     }
 }
 
-function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
+//function to check for similar def calls in 2 syntax nodes
+export function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
     if(sn1.type == "def" && sn2.type == "def") {
         if(sn1.code && sn1.code.length > 0 && sn2.code && sn2.code.length > 0) {
             if(sn1.code.length == sn2.code.length) {
@@ -247,7 +255,8 @@ function checkDef(sn1: SyntaxNode, sn2:SyntaxNode) {
     }
 }
 
-function checkImport(sn1: SyntaxNode, sn2:SyntaxNode) {
+//function to check for similar import calls in 2 syntax nodes
+export function checkImport(sn1: SyntaxNode, sn2:SyntaxNode) {
     if(sn1.type == "import" && sn2.type == "import") {
         let x = 0
         if(sn1.names.length > sn2.names.length) {
@@ -267,14 +276,15 @@ function checkImport(sn1: SyntaxNode, sn2:SyntaxNode) {
             }
         }
 
-        if(u > 0.7 * x) {
+        if(u > 0.6 * x) {
             return true
         }
     }
 
 }
 
-function checkFor(sn1: SyntaxNode, sn2:SyntaxNode) {
+//function to check for similar for calls in 2 syntax nodes
+export function checkFor(sn1: SyntaxNode, sn2:SyntaxNode) {
     if(sn1.type == "for" && sn2.type == "for") {
         if(sn1.target.length == sn2.target.length) {
             let result = true;
@@ -314,7 +324,8 @@ function checkFor(sn1: SyntaxNode, sn2:SyntaxNode) {
     }
 }
 
-function checkReturn(sn1: SyntaxNode, sn2:SyntaxNode) {
+//function to check for similar return calls in 2 syntax nodes
+export function checkReturn(sn1: SyntaxNode, sn2:SyntaxNode) {
     if(sn1.type == "return" && sn2.type == "return") {
         if(sn1.values.length == sn2.values.length) {
             let u = 0
@@ -328,60 +339,79 @@ function checkReturn(sn1: SyntaxNode, sn2:SyntaxNode) {
                 }
             }
 
-            if(u > 0.4 * sn1.values.length) {
-                return true
+            if(sn1.values.length > sn2.values.length) {
+                if(u > 0.4 * sn1.values.length) {
+                    return true
+                }
+            }
+            else {
+                if(u > 0.4 * sn2.values.length) {
+                    return true
+                }
             }
 
         }
     }
 }
 
-function checkAssert(sn1: SyntaxNode, sn2:SyntaxNode) {
+//function to check for similar assert calls in 2 syntax nodes
+export function checkAssert(sn1: SyntaxNode, sn2:SyntaxNode) {
     if(sn1.type == "assert" && sn2.type == "assert") {
-        if(sn1.cond.type == sn2.cond.type) {
-            let a = sn1.cond
-            let b = sn2.cond
-            if(checkSyntax(a,b)) {
-                return true
-            }
-        }
-    }
-}
-
-function checkClass(sn1: SyntaxNode, sn2:SyntaxNode) {
-    if(sn1.type == "class" && sn2.type == "class") {
-        let u = 0
-        for(let x = 0; x < sn1.code.length; x++) {
-            for(let y = 0; y < sn2.code.length; y++) {
-                let w = sn1.code[x]
-                let e = sn2.code[y]
-                if(checkSyntax(w, e)) {
-                    u = u + 1
+        if(sn1.cond && sn2.cond) {
+            if(sn1.cond.type == sn2.cond.type) {
+                let a = sn1.cond
+                let b = sn2.cond
+                if(checkSyntax(a,b)) {
+                    return true
                 }
             }
         }
-        if(sn2.code.length > sn1.code.length) {
-            if(u > 0.4 * sn1.code.length) {
-                return true
+        return true
+    }
+}
+
+//function to check for similar class calls in 2 syntax nodes
+export function checkClass(sn1: SyntaxNode, sn2:SyntaxNode) {
+    console.log("my b")
+    if(sn1.type == "class" && sn2.type == "class") {
+        let u = 0
+        if(sn1.code && sn2.code) {
+            for(let x = 0; x < sn1.code.length; x++) {
+                for(let y = 0; y < sn2.code.length; y++) {
+                    let w = sn1.code[x]
+                    let e = sn2.code[y]
+                    if(checkSyntax(w, e)) {
+                        u = u + 1
+                    }
+                }
+            }
+            if(sn2.code.length > sn1.code.length) {
+                if(u > 0.4 * sn1.code.length) {
+                    return true
+                }
+            }
+            else {
+                if(u > 0.4 * sn2.code.length) {
+                    return true
+                }
             }
         }
-        else {
-            if(u > 0.4 * sn2.code.length) {
-                return true
-            }
-        }
+        return true
     }
 }
 
 
-function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
+// Function that checks the syntax of all types of Syntax node and is called in the main function "compareFiles"
+export function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
+    //check for assign block
     if((a.type == "assign" && b.type == "assign")) {
         if(checkAssign(a, b)) {
             return true;
         }
     }
 
+    //check for binop block
     else if(a.type == "binop" && b.type == "binop") {
         if(a.left.type == b.left.type && a.right.type == b.right.type) {
             if(a.right.type == "name" && b.right.type == "name") {
@@ -403,6 +433,7 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
     }
 
+    //check for literal block
     else if(a.type == "literal" && b.type == "literal") {
         if(a.value == b.value) {
             return true;
@@ -410,6 +441,7 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
     }
 
 
+    //check for call block
     else if(a.type == "call" && b.type == "call") {
         if(checkCall(a, b)) {
             return true;     
@@ -417,6 +449,7 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
     }
 
+    //check for def block
     else if(a.type == "def" && b.type == "def") {
         if(checkDef(a, b)) {
             return true;
@@ -424,6 +457,7 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
                                         
     }
 
+    //check for else block
     else if(a.type == "else" && b.type == "else") {
         if(checkElse(a, b)) {
             return true;
@@ -431,30 +465,35 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
 
     }
 
+    //check for import block
     else if(a.type == "import" && b.type == "import") {
         if(checkImport(a, b)) {
             return true;
         }
     }
 
+    //check for for block
     else if(a.type == "for" && b.type == "for") {
         if(checkFor(a,b)) {
             return true;
         }
     }
 
+    //check for return block
     else if(a.type == "return" && b.type == "return") {
         if(checkReturn(a, b)) {
             return true;
         }
     }
 
+    //check for assert block
     else if(a.type == "assert" && b.type == "assert") {
         if(checkAssert(a, b)) {
             return true;
         }
     }
 
+    // check for class block
     else if(a.type == "class" && b.type == "class") {
         if(checkClass(a, b)) {
             return true
@@ -462,11 +501,13 @@ function checkSyntax(a: SyntaxNode, b:SyntaxNode) {
     }
 }
 
-function arraysEqual(a1: Array<string>,a2 : Array<string>) {
+//helper function for checking if 2 arrays are equal
+export function arraysEqual(a1: Array<string>,a2 : Array<string>) {
     return JSON.stringify(a1)==JSON.stringify(a2);
 }
 
-function checkBlockIsThere(block : Block, list: Array<Array<Block>>) {
+//helper function for checking if a block is there in a list of blocks
+export function checkBlockIsThere(block : Block, list: Array<Array<Block>>) {
     for(let i = 0; i < list.length; i ++) {
         if(list[i].includes(block)) {
             return true;
@@ -474,7 +515,8 @@ function checkBlockIsThere(block : Block, list: Array<Array<Block>>) {
     }
 }
 
-function checkLineNumberIsThere(line : number, list: number[][]) {
+//helper function to check if a line number is there in a list of line numbers
+export function checkLineNumberIsThere(line : number, list: number[][]) {
     for(let i = 0; i < list.length; i ++) {
         if(list[i].slice(0,2).includes(line)) {
             return true;

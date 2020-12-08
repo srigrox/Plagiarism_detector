@@ -228,8 +228,8 @@ const code = new Code("code", sampleCode.join('\n'));
 let file1, file2;
 
 // file1 = new Code("code.py", "x = 1");
-file1 = new Code("code2.py", sampleCode3.join('\n'));
-file2 = new Code("index.py", sampleCode3.join('\n'));
+file1 = new Code("code2.py", sampleCode1.join('\n'));
+file2 = new Code("index.py", sampleCode1.join('\n'));
 
 //application.upload(file1);
 //application.upload(file2);
