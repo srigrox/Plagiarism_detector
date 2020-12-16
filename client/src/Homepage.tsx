@@ -18,7 +18,7 @@ export default class Homepage extends React.Component<{}, PlagiarismAppState> {
         this.loginForm = React.createRef();
         this.signupForm = React.createRef();
         this.state = { 
-            isLoggedIn: true,
+            isLoggedIn: false,
             showLogin: false,
             showSignup: false,
             currentMenu: 'upload',
